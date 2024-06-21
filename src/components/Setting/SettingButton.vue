@@ -16,7 +16,7 @@ const chatModelOptions = chatModels.map((model: string) => ({
   value: model
 }))
 
-const defaultConfig: ChatConfig = {
+const defaultConfig: ChatModelConfig = {
   id: '',
   name: '',
   appId: '',
@@ -32,15 +32,15 @@ const addConfigHandler = () => {
   configData.value.push({...defaultConfig, id: generateRandomString()})
 }
 
-const isDefaultUpdateHandler = (flag: boolean, id: string) => {
-  if(flag) {
-    configData.value.forEach((item) => {
-      item.isDefault = item.id === id;
-    })
-  } else {
-    configData.value[0]!.isDefault = true
-  }
-}
+// const isDefaultUpdateHandler = (flag: boolean, id: string) => {
+//   if(flag) {
+//     configData.value.forEach((item) => {
+//       item.isDefault = item.id === id;
+//     })
+//   } else {
+//     configData.value[0]!.isDefault = true
+//   }
+// }
 
 </script>
 
@@ -62,7 +62,7 @@ const isDefaultUpdateHandler = (flag: boolean, id: string) => {
             <th>ApiKey</th>
             <th>ApiBaseUrl</th>
             <th>模型</th>
-            <th class="text-center">是否默认</th>
+<!--            <th class="text-center">是否默认</th>-->
             <th class="text-center">操作</th>
           </tr>
           </thead>
@@ -93,9 +93,9 @@ const isDefaultUpdateHandler = (flag: boolean, id: string) => {
                 <n-select v-model:value="conf.model" :options="chatModelOptions" placeholder="请选择模型" />
               </n-form-item>
             </td>
-            <td class="text-center">
+<!--            <td class="text-center">
               <n-switch v-model:value="conf.isDefault" @update:value="(value) => { isDefaultUpdateHandler(value, conf.id) }"/>
-            </td>
+            </td>-->
             <td class="text-center">
               <n-button text type="error" @click="() => {configData.splice(configData.indexOf(conf), 1)}">删除</n-button>
             </td>

@@ -1,6 +1,6 @@
 
 type ChatModelConfigState = {
-    models: ChatConfig[]
+    models: ChatModelConfig[]
 }
 
 export const useChatModelConfig = defineStore('ChatModelConfig', {

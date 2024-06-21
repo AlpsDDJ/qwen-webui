@@ -1,10 +1,14 @@
 <script setup lang="ts">
+
 defineOptions({name: 'ToolBar'})
 </script>
 
 <template>
   <div class="tool-bar flex justify-between items-center">
-    <stt-button/>
+    <div><stt-button/></div>
+    <div>
+      <select-chat-model />
+    </div>
   </div>
 </template>
 

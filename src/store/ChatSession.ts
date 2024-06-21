@@ -3,14 +3,17 @@ import {generateRandomString} from "@/utils";
 export const useChatSessionStore = defineStore('ChatSession', {
     state: (): ChatSessionState => ({
         sessions: {
-            default: []
+            default: {
+                messages: []
+            }
         },
         currentSession: 'default',
         loading: false,
         inputContent: ''
     }),
     getters: {
-        msgList: (state) => state.sessions[state.currentSession],
+        messages: (state) => state.sessions[state.currentSession]?.messages ?? [],
+        model: (state) => state.sessions[state.currentSession]?.chatConfig,
         sending: (state) => state.loading,
         content: (state) => state.inputContent
     },
@@ -18,11 +21,14 @@ export const useChatSessionStore = defineStore('ChatSession', {
         setCurrentChat(chat: string) {
             this.currentSession = chat
         },
+        setCurrentModel (model: ChatModelConfig) {
+            this.sessions[this.currentSession].chatConfig = model
+        },
         newChat() {
-            this.sessions[this.currentSession] = []
+            this.sessions[this.currentSession].messages = []
         },
         clearMsg(chat?: string) {
-            this.sessions[chat || 'default'] = []
+            this.sessions[chat || 'default'].messages = []
         },
         removeChat(chat: string) {
             delete this.sessions[chat]
@@ -36,11 +42,11 @@ export const useChatSessionStore = defineStore('ChatSession', {
         getUserMsg(id: MsgId) {
             console.log('id -->',  id)
             console.log('this.sessions[this.currentSession] ---> ', this.sessions[this.currentSession])
-            return this.sessions[this.currentSession].find(msg => msg.id === id)
+            return this.sessions[this.currentSession]?.messages?.find(msg => msg.id === id)
         },
         addUserMsg(content: string, id?: MsgId) {
             this.loading = true
-            !this.sessions[this.currentSession] && (this.sessions[this.currentSession] = [])
+            !this.sessions[this.currentSession] && (this.sessions[this.currentSession].messages = [])
             const _id = id || generateRandomString()
             const msg = {
                 type: 'send',
@@ -48,17 +54,17 @@ export const useChatSessionStore = defineStore('ChatSession', {
                 id: _id
             } as ChatMsg;
 
-            this.sessions[this.currentSession].push(msg)
+            this.sessions[this.currentSession].messages?.push(msg)
             // await this.addRobotMsg('', _id)
             this.addEmptyRobotMsg(_id)
             return msg
         },
         changeMsg(msg: ChatMsg){
-            this.sessions[this.currentSession] = this.sessions[this.currentSession].map(item => item.id === msg.id ? msg : item)
+            this.sessions[this.currentSession].messages = this.sessions[this.currentSession].messages?.map(item => item.id === msg.id ? msg : item)
         },
         addEmptyRobotMsg(forMsgId: MsgId) {
-            !this.sessions[this.currentSession] && (this.sessions[this.currentSession] = [])
-            this.sessions[this.currentSession].push({
+            !this.sessions[this.currentSession] && (this.sessions[this.currentSession].messages = [])
+            this.sessions[this.currentSession]?.messages?.push({
                 type: 'receive',
                 content: '',
                 userMsgId: forMsgId,
@@ -67,8 +73,8 @@ export const useChatSessionStore = defineStore('ChatSession', {
             } as ChatMsg)
         },
         async addRobotMsg(content: string, forMsgId: MsgId, id?: MsgId) {
-            !this.sessions[this.currentSession] && (this.sessions[this.currentSession] = [])
-            this.sessions[this.currentSession].push({
+            !this.sessions[this.currentSession] && (this.sessions[this.currentSession].messages = [])
+            this.sessions[this.currentSession].messages.push({
                 type: 'receive',
                 content,
                 userMsgId: forMsgId,
@@ -81,3 +87,4 @@ export const useChatSessionStore = defineStore('ChatSession', {
         paths: ['sessions', 'currentSession']
     }
 })
+

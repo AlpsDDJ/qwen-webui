@@ -1,10 +1,26 @@
 import {fetchStreamedData} from "./request";
 import {useEventSource} from "@vueuse/core";
+import {useChatSessionStore} from "@/store/ChatSession";
 
 export const sendQwen = async (param: QwenParams) => {
-    const sk = 'sk-43e3f0a374c64e1ca2929fb827de80f1'
+    const {model} = useChatSessionStore()
+    if(!model) {
+        console.warn('模型不可为空')
+        window.$message.error('模型不可为空')
+    }
+    const sk = model?.apiKey
+    const url = model?.apiBaseUrl
+    const _url = url.replace(/{\s*(.*?)\s*}/g, (_, objKey: keyof typeof model) => {
+        const val = model[objKey]
+        if (val === undefined) {
+            throw new Error(`${config.url} 缺少参数: [${objKey.toString()}]`)
+        }
+        // 删除URL中匹配的参数
+        // delete data[objKey]
+        return encodeURIComponent(val as any)
+    })
 
-    return await fetchStreamedData('/api/v1/apps/309647a49d2c4f10ae87f4e9a086631b/completion', {
+    return await fetchStreamedData(_url, {
         method: 'POST',
         body: JSON.stringify(param),
         headers: {

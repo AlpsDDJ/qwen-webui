@@ -5,7 +5,7 @@ import {useEventBus} from "@vueuse/core";
 
 defineOptions({name: 'ChatMsgBox'})
 
-const {msgList, sending} = storeToRefs(useChatSessionStore())
+const {messages, sending} = storeToRefs(useChatSessionStore())
 const scrollbarRef = ref<ScrollbarInst>()
 
 const scrollToBottom = () => {
@@ -34,7 +34,7 @@ onBeforeUnmount(() => {
 <template>
   <n-scrollbar ref="scrollbarRef" content-style="overflow: hidden;">
     <div class="chat-msg-box">
-      <chat-msg-item v-for="(item, index) in msgList" :key="index" :msg="item"/>
+      <chat-msg-item v-for="(item, index) in messages" :key="index" :msg="item"/>
     </div>
   </n-scrollbar>
 </template>
