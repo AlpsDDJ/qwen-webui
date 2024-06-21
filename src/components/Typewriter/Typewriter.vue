@@ -3,6 +3,7 @@ import {fetchStreamedData} from "@/api/request";
 import {QwenParams, sendQwen} from "@/api/qwen";
 import {useChatMsgStore} from "@/store/chatMsg";
 import MarkdownIt from 'markdown-it';
+import {useEventBus} from "@vueuse/core";
 
 const markdown = new MarkdownIt({
   html: true
@@ -17,6 +18,8 @@ const typing = ref(false);
 
 const chatMsgStore = useChatMsgStore();
 const {changeLoading, getUserMsg, changeMsg} = chatMsgStore
+
+const onAnswerUpdateEvent = useEventBus<void>('answerUpdate')
 
 async function readStream(reader: any) {
   console.log('reader ---> ', reader)
@@ -42,14 +45,8 @@ async function readStream(reader: any) {
         if (finish_reason !== 'stop') {
           displayedText.value += text;
           typing.value = true;
+          onAnswerUpdateEvent.emit()
           await new Promise(resolve => setTimeout(resolve, 50)); // 控制打字速度
-          // for (const char of text) {
-          //   // if (char === '\n') continue; // 忽略换行符
-          //   displayedText.value += char;
-          //   console.log('displayedText.value --> ', displayedText.value)
-          //   typing.value = true;
-          //   await new Promise(resolve => setTimeout(resolve, 50)); // 控制打字速度
-          // }
         } else {
           Object.assign(props.msg, {docReferences: doc_references})
         }

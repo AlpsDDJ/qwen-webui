@@ -2,13 +2,6 @@
 import {useChatMsgStore} from '@/store/chatMsg';
 import {useEventBus} from "@vueuse/core";
 
-// const content = ref<string>('')
-
-// const minRows = 6
-// const contentRows = computed<number>(() => {
-//   const contentLines = (content.value.match(/\n/g) || []).length + 1
-//   return contentLines < minRows ? minRows : contentLines
-// })
 const chatMsgStore = useChatMsgStore();
 
 const {sending, inputContent: content} = storeToRefs(chatMsgStore)
@@ -44,7 +37,7 @@ const autosize = {
 
 <template>
   <div class="m-12px">
-    <n-input v-model:value="content" type="textarea" :autosize="autosize" placeholder="Enter 发送，Shift + Enter 换行"
+    <n-input v-model:value="content" type="textarea" :autosize="autosize" autofocus placeholder="Enter 发送，Shift + Enter 换行"
              @keydown.enter="handleKeyDown">
       <template #suffix>
         <div class="h-100% flex items-end flex-content-end pb">

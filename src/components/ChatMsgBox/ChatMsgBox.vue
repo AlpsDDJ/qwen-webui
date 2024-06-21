@@ -16,18 +16,18 @@ const scrollToBottom = () => {
 }
 
 const onSendEvent = useEventBus<string>('send')
+const onAnswerUpdateEvent = useEventBus<void>('answerUpdate')
 
-onSendEvent.on(() => {
-  scrollToBottom()
-})
+onSendEvent.on(scrollToBottom)
+onAnswerUpdateEvent.on(scrollToBottom)
 
 onMounted(() => {
   scrollToBottom()
-  setInterval(() => {
-    if (sending.value) {
-      scrollToBottom()
-    }
-  }, 300)
+})
+
+onBeforeUnmount(() => {
+  onSendEvent.off(scrollToBottom)
+  onAnswerUpdateEvent.off(scrollToBottom)
 })
 </script>
 
