@@ -40,6 +40,10 @@ const createRecognition = () => {
         }
         // console.log(content.value)
       }
+      recognition.onend = () => {
+        showAudioTime.value && recognition.start()
+      }
+
     } else {
       window.$message.error('浏览器不支持语音识别')
     } // 加上容错处理
