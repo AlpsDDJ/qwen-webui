@@ -1,9 +1,5 @@
 export {}
 declare global {
-
-    // export type {MessageApiInjection} from 'naive-ui/es/message/src/MessageProvider'
-
-
     type MsgId = string | number
 
     type DocReference = {
@@ -31,14 +27,3 @@ declare global {
         inputContent: string
     }
 }
-
-// declare global {
-//
-//     export type {MessageApiInjection} from 'naive-ui/es/message/src/MessageProvider'
-//     declare interface Window {
-//         SpeechRecognition?: any;
-//         webkitSpeechRecognition?: any;
-//         $message: MessageApiInjection
-//     }
-//     import('naive-ui/es/message/src/MessageProvider')
-// }
