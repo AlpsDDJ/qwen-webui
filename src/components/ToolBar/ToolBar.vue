@@ -7,7 +7,7 @@ defineOptions({name: 'ToolBar'})
   <div class="tool-bar flex justify-between items-center">
     <div><stt-button/></div>
     <div>
-      <select-chat-model />
+      <clear-session-button />
     </div>
   </div>
 </template>

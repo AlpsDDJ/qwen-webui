@@ -17,7 +17,7 @@ const displayedText = ref('');
 const typing = ref(false);
 
 const chatMsgStore = useChatSessionStore();
-const {changeLoading, getUserMsg, changeMsg} = chatMsgStore
+const {changeLoading, getUserMsg, setSessionId} = chatMsgStore
 
 const onAnswerUpdateEvent = useEventBus<void>('answerUpdate')
 
@@ -41,11 +41,12 @@ async function readStream(reader: any) {
           console.info('chunkText ---> ', chunkText)
           console.error(err)
         }
-        const {text, finish_reason, doc_references} = jsonData.output || {}
+        const {text, finish_reason, doc_references, session_id} = jsonData.output || {}
         if (finish_reason !== 'stop') {
           displayedText.value += text;
           typing.value = true;
           onAnswerUpdateEvent.emit()
+          setSessionId(session_id)
           await new Promise(resolve => setTimeout(resolve, 50)); // 控制打字速度
         } else {
           Object.assign(props.msg, {docReferences: doc_references})

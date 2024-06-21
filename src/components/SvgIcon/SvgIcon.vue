@@ -3,7 +3,7 @@ import {getSvg, SvgNames} from './svgs';
 
 defineOptions({name: 'SvgIcon'})
 
-const props = defineProps<{ svg?: string | string[], name?: SvgNames }>()
+const props = defineProps<{ svg?: string | string[], name?: SvgNames, viewBox?: string }>()
 
 const paths = computed<string[]>(() => {
   if (props.svg) {
@@ -18,7 +18,7 @@ const paths = computed<string[]>(() => {
 
 <template>
   <n-icon>
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" :viewBox="viewBox ?? '0 0 512 512'" enable-background="new 0 0 512 512" xml:space="preserve">
       <g><path v-for="p in paths" :d="p"></path></g>
     </svg>
   </n-icon>

@@ -4,7 +4,8 @@ export const useChatSessionStore = defineStore('ChatSession', {
     state: (): ChatSessionState => ({
         sessions: {
             default: {
-                messages: []
+                messages: [],
+                // sessionId: generateRandomString()
             }
         },
         currentSession: 'default',
@@ -14,6 +15,7 @@ export const useChatSessionStore = defineStore('ChatSession', {
     getters: {
         messages: (state) => state.sessions[state.currentSession]?.messages ?? [],
         model: (state) => state.sessions[state.currentSession]?.chatConfig,
+        sessionId: (state) => state.sessions[state.currentSession]?.sessionId,
         sending: (state) => state.loading,
         content: (state) => state.inputContent
     },
@@ -27,8 +29,12 @@ export const useChatSessionStore = defineStore('ChatSession', {
         newChat() {
             this.sessions[this.currentSession].messages = []
         },
-        clearMsg(chat?: string) {
+        setSessionId(sessionId: string) {
+            this.sessions[this.currentSession].sessionId = sessionId
+        },
+        clearSession(chat?: string) {
             this.sessions[chat || 'default'].messages = []
+            this.sessions[chat || 'default'].sessionId = generateRandomString()
         },
         removeChat(chat: string) {
             delete this.sessions[chat]

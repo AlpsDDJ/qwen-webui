@@ -6,6 +6,7 @@
   <div class="chat-box-header flex justify-around">
     <div class="chat-box-title">千问 - WebUI</div>
     <div class="chat-box-control flex justify-end items-center">
+      <select-chat-model class="mr-16px"/>
       <SettingButton />
     </div>
   </div>

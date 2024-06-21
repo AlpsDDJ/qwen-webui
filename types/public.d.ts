@@ -32,6 +32,7 @@ declare global {
 
     interface ChatSession {
         messages: ChatMsg[],
+        sessionId?: string
         chatConfig?: ChatModelConfig
     }
 

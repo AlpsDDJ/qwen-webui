@@ -3,22 +3,21 @@ import {useEventSource} from "@vueuse/core";
 import {useChatSessionStore} from "@/store/ChatSession";
 
 export const sendQwen = async (param: QwenParams) => {
-    const {model} = useChatSessionStore()
+    const {model, sessionId} = useChatSessionStore()
     if(!model) {
-        console.warn('模型不可为空')
         window.$message.error('模型不可为空')
+        throw new Error(`模型不可为空`)
     }
     const sk = model?.apiKey
-    const url = model?.apiBaseUrl
-    const _url = url.replace(/{\s*(.*?)\s*}/g, (_, objKey: keyof typeof model) => {
-        const val = model[objKey]
+    const url = model?.apiBaseUrl ?? ''
+    const _url = url.replace(/{\s*(.*?)\s*}/g, (_, objKey) => {
+        const val = model![objKey]
         if (val === undefined) {
-            throw new Error(`${config.url} 缺少参数: [${objKey.toString()}]`)
+            throw new Error(`模型缺少参数: [${objKey.toString()}]`)
         }
-        // 删除URL中匹配的参数
-        // delete data[objKey]
         return encodeURIComponent(val as any)
     })
+    sessionId && (param.input.session_id = sessionId)
 
     return await fetchStreamedData(_url, {
         method: 'POST',
@@ -40,7 +39,8 @@ type RoleMessage = {
 export type QwenParams = {
     input: {
         prompt?: string,
-        message?: RoleMessage[]
+        message?: RoleMessage[],
+        session_id?: string,
     },
     parameters: any,
     debug: any
