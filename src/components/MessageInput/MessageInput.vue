@@ -31,11 +31,15 @@ const handleKeyDown = async (event: KeyboardEvent) => {
     await send()
   }
 }
+const autosize = {
+  minRows: 3,
+  maxRows: 15
+}
 </script>
 
 <template>
   <div class="m-12px">
-    <n-input v-model:value="content" type="textarea" :rows="contentRows" placeholder="Enter 发送，Shift + Enter 换行"
+    <n-input v-model:value="content" type="textarea" :autosize="autosize" placeholder="Enter 发送，Shift + Enter 换行"
              @keydown.enter="handleKeyDown">
       <template #suffix>
         <div class="h-100% flex items-end flex-content-end pb">

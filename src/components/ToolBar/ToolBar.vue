@@ -19,7 +19,7 @@ const startRecording = () => {
 
 <template>
   <div class="tool-bar flex justify-between items-center">
-    <n-button strong tertiary round :type="showAudioTime ? 'error' : 'success'" @click="startRecording">
+    <n-button strong quaternary round :type="showAudioTime ? 'error' : 'success'" @click="startRecording">
       <template #icon>
         <svg-icon :name="!showAudioTime ? 'IosMic' : 'IosMicOff'" />
       </template>
@@ -31,8 +31,8 @@ const startRecording = () => {
 <style scoped lang="less">
 .tool-bar {
   padding-top: 12px;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 12px;
+  padding-right: 12px;
   border-top: 1px solid #e5e5e5;
 }
 </style>

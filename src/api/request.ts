@@ -10,7 +10,7 @@ export { request }
 export async function fetchStreamedData(url, config?: RequestInit) {
     const response = await fetch(url, config);
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
     }
-    return response.body.getReader(); // 返回一个ReadableStream的reader
+    return response.body?.getReader()
 }

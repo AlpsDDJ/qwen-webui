@@ -9,7 +9,7 @@
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-100vh w-100vw">
+  <div class="flex justify-center items-center h-100% w-100vw">
     <div class="chat-box">
       <chat-box-header />
       <div class="chat-box-body flex-1">

@@ -1,5 +1,3 @@
-import { defineStore } from 'pinia'
-
 export const useChatMsgStore = defineStore('chatMsg', {
     state: (): ChatMsgState => ({
         chatMap: {
@@ -49,8 +47,7 @@ export const useChatMsgStore = defineStore('chatMsg', {
             return msg
         },
         changeMsg(msg: ChatMsg){
-            const { id } = msg
-            this.chatMap[this.currentChat] = this.chatMap[this.currentChat].map(item => item.id = msg.id ? msg : item)
+            this.chatMap[this.currentChat] = this.chatMap[this.currentChat].map(item => item.id === msg.id ? msg : item)
         },
         addEmptyRobotMsg(forMsgId: MsgId) {
             !this.chatMap[this.currentChat] && (this.chatMap[this.currentChat] = [])
@@ -73,13 +70,14 @@ export const useChatMsgStore = defineStore('chatMsg', {
         },
     },
     persist: {
-        enabled: true,
-        strategies: [
-            {
-                key: 'ChatMsg', // 修改存在缓存中的key值
-                storage: localStorage, /// 修改存储方式为localStorage，默认sessionStorage
-            }
-        ],
+        // enabled: true,
+        // strategies: [
+        //     {
+        //         key: 'ChatMsg', // 修改存在缓存中的key值
+        //         storage: localStorage, /// 修改存储方式为localStorage，默认sessionStorage
+        //     }
+        // ],
+        key: 'ChatMsg', // 修改存在缓存中的key值
         paths: ['chatMap', 'currentChat']
     }
 })

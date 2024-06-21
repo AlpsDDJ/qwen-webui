@@ -62,9 +62,9 @@ async function readStream(reader: any) {
 const loadData = async () => {
   displayedText.value = ''
   Object.assign(props.msg, {fetched: true, content: '', docReferences: []})
-  const userMsg = getUserMsg(props.msg?.userMsgId);
+  const userMsg = getUserMsg(props.msg?.userMsgId ?? '')
   const params: QwenParams = {
-    input: {prompt: userMsg},
+    input: {prompt: userMsg?.content},
     parameters: {
       // result_format: "message",
       incremental_output: true

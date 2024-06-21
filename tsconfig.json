@@ -24,8 +24,6 @@
     ],
     "types": [
       "vite/client",
-      "reflect-metadata",
-      "pinia-plugin-persist"
     ],
     "noImplicitAny": false,
     "skipLibCheck": true,
