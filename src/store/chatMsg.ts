@@ -1,3 +1,5 @@
+import {generateRandomString} from "@/utils";
+
 export const useChatMsgStore = defineStore('chatMsg', {
     state: (): ChatMsgState => ({
         chatMap: {
@@ -39,7 +41,7 @@ export const useChatMsgStore = defineStore('chatMsg', {
         addUserMsg(content: string, id?: MsgId) {
             this.loading = true
             !this.chatMap[this.currentChat] && (this.chatMap[this.currentChat] = [])
-            const _id = id || Math.random().toString(36).slice(2)
+            const _id = id || generateRandomString()
             const msg = {
                 type: 'send',
                 content,
@@ -61,7 +63,7 @@ export const useChatMsgStore = defineStore('chatMsg', {
                 content: '',
                 userMsgId: forMsgId,
                 fetched: false,
-                id: Math.random().toString(36).slice(2)
+                id: generateRandomString()
             } as ChatMsg)
         },
         async addRobotMsg(content: string, forMsgId: MsgId, id?: MsgId) {
@@ -70,7 +72,7 @@ export const useChatMsgStore = defineStore('chatMsg', {
                 type: 'receive',
                 content,
                 userMsgId: forMsgId,
-                id: id || Math.random().toString(36).slice(2)
+                id: id || generateRandomString()
             } as ChatMsg)
         },
     },
