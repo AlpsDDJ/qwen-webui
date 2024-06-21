@@ -1,4 +1,4 @@
-export {}
+
 declare global {
     type MsgId = string | number
 
@@ -20,10 +20,24 @@ declare global {
         docReferences?: DocReference[]
     }
 
-    type ChatMsgState = {
-        chatMap: Record<string, ChatMsg[]>
-        currentChat: string
+    type ChatSessionState = {
+        sessions: Record<string, ChatMsg[]>
+        currentSession: string
         loading: boolean
         inputContent: string
     }
+
+    // export const chatModels = ['qwen-max', 'qwen-pro', 'qwen-lite', 'qwen-turbo'] as const
+    // type ChatModel = (typeof chatModels)[number]
+
+    type ChatConfig = {
+        id: string,
+        name: string,
+        appId: string,
+        apiKey: string,
+        apiBaseUrl: string,
+        model: string,
+        isDefault: boolean
+    }
 }
+export {}

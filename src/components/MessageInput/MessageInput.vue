@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {useChatMsgStore} from '@/store/chatMsg';
+import {useChatSessionStore} from '@/store/ChatSession';
 import {useEventBus} from "@vueuse/core";
 
-const chatMsgStore = useChatMsgStore();
+const chatMsgStore = useChatSessionStore();
 
 const {sending, inputContent: content} = storeToRefs(chatMsgStore)
 

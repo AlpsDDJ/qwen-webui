@@ -1,31 +1,31 @@
 import {generateRandomString} from "@/utils";
 
-export const useChatMsgStore = defineStore('chatMsg', {
-    state: (): ChatMsgState => ({
-        chatMap: {
+export const useChatSessionStore = defineStore('ChatSession', {
+    state: (): ChatSessionState => ({
+        sessions: {
             default: []
         },
-        currentChat: 'default',
+        currentSession: 'default',
         loading: false,
         inputContent: ''
     }),
     getters: {
-        msgList: (state) => state.chatMap[state.currentChat],
+        msgList: (state) => state.sessions[state.currentSession],
         sending: (state) => state.loading,
         content: (state) => state.inputContent
     },
     actions: {
         setCurrentChat(chat: string) {
-            this.currentChat = chat
+            this.currentSession = chat
         },
         newChat() {
-            this.chatMap[this.currentChat] = []
+            this.sessions[this.currentSession] = []
         },
         clearMsg(chat?: string) {
-            this.chatMap[chat || 'default'] = []
+            this.sessions[chat || 'default'] = []
         },
         removeChat(chat: string) {
-            delete this.chatMap[chat]
+            delete this.sessions[chat]
         },
         changeLoading(loading: boolean) {
             this.loading = loading
@@ -35,12 +35,12 @@ export const useChatMsgStore = defineStore('chatMsg', {
         },
         getUserMsg(id: MsgId) {
             console.log('id -->',  id)
-            console.log('this.chatMap[this.currentChat] ---> ', this.chatMap[this.currentChat])
-            return this.chatMap[this.currentChat].find(msg => msg.id === id)
+            console.log('this.sessions[this.currentSession] ---> ', this.sessions[this.currentSession])
+            return this.sessions[this.currentSession].find(msg => msg.id === id)
         },
         addUserMsg(content: string, id?: MsgId) {
             this.loading = true
-            !this.chatMap[this.currentChat] && (this.chatMap[this.currentChat] = [])
+            !this.sessions[this.currentSession] && (this.sessions[this.currentSession] = [])
             const _id = id || generateRandomString()
             const msg = {
                 type: 'send',
@@ -48,17 +48,17 @@ export const useChatMsgStore = defineStore('chatMsg', {
                 id: _id
             } as ChatMsg;
 
-            this.chatMap[this.currentChat].push(msg)
+            this.sessions[this.currentSession].push(msg)
             // await this.addRobotMsg('', _id)
             this.addEmptyRobotMsg(_id)
             return msg
         },
         changeMsg(msg: ChatMsg){
-            this.chatMap[this.currentChat] = this.chatMap[this.currentChat].map(item => item.id === msg.id ? msg : item)
+            this.sessions[this.currentSession] = this.sessions[this.currentSession].map(item => item.id === msg.id ? msg : item)
         },
         addEmptyRobotMsg(forMsgId: MsgId) {
-            !this.chatMap[this.currentChat] && (this.chatMap[this.currentChat] = [])
-            this.chatMap[this.currentChat].push({
+            !this.sessions[this.currentSession] && (this.sessions[this.currentSession] = [])
+            this.sessions[this.currentSession].push({
                 type: 'receive',
                 content: '',
                 userMsgId: forMsgId,
@@ -67,8 +67,8 @@ export const useChatMsgStore = defineStore('chatMsg', {
             } as ChatMsg)
         },
         async addRobotMsg(content: string, forMsgId: MsgId, id?: MsgId) {
-            !this.chatMap[this.currentChat] && (this.chatMap[this.currentChat] = [])
-            this.chatMap[this.currentChat].push({
+            !this.sessions[this.currentSession] && (this.sessions[this.currentSession] = [])
+            this.sessions[this.currentSession].push({
                 type: 'receive',
                 content,
                 userMsgId: forMsgId,
@@ -77,7 +77,7 @@ export const useChatMsgStore = defineStore('chatMsg', {
         },
     },
     persist: {
-        key: 'ChatMsg', // 修改存在缓存中的key值
-        paths: ['chatMap', 'currentChat']
+        key: 'ChatSession', // 修改存在缓存中的key值
+        paths: ['sessions', 'currentSession']
     }
 })

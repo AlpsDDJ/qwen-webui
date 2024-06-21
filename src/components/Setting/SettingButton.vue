@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {generateRandomString} from "@/utils";
+import {useChatModelConfig} from "@/store/ChatModelConfig";
 
 defineOptions({name: 'SettingButton'})
 
@@ -7,24 +8,13 @@ const showSetting = ref<boolean>(false)
 const handleShowSetting = () => {
   showSetting.value = true
 }
+const chatModels = ['qwen-max', 'qwen-pro', 'qwen-lite', 'qwen-turbo']
+// type ChatModel = (typeof chatModels)[number]
 
-const chatModels = ['qwen-max', 'qwen-pro', 'qwen-lite', 'qwen-turbo'] as const
-const chatModelOptions = chatModels.map(model => ({
+const chatModelOptions = chatModels.map((model: string) => ({
   label: model,
   value: model
 }))
-
-type ChatModel = (typeof chatModels)[number]
-
-type ChatConfig = {
-  id: string,
-  name: string,
-  appId: string,
-  apiKey: string,
-  apiBaseUrl: string,
-  model: ChatModel,
-  isDefault: boolean
-}
 
 const defaultConfig: ChatConfig = {
   id: '',
@@ -36,11 +26,22 @@ const defaultConfig: ChatConfig = {
   isDefault: false
 }
 
+const { models: configData } = storeToRefs(useChatModelConfig())
+
 const addConfigHandler = () => {
   configData.value.push({...defaultConfig, id: generateRandomString()})
 }
 
-const configData = ref<ChatConfig[]>([])
+const isDefaultUpdateHandler = (flag: boolean, id: string) => {
+  if(flag) {
+    configData.value.forEach((item) => {
+      item.isDefault = item.id === id;
+    })
+  } else {
+    configData.value[0]!.isDefault = true
+  }
+}
+
 </script>
 
 <template>
@@ -52,8 +53,8 @@ const configData = ref<ChatConfig[]>([])
   <n-drawer v-model:show="showSetting" placement="top" height="70%" title="设置">
     <n-drawer-content title="设置">
       <n-button type="primary" @click="addConfigHandler">添加配置</n-button>
-      <n-form :model="configData">
-        <n-table :single-line="false">
+      <n-form :model="configData" :show-feedback="false">
+        <n-table :single-line="false" class="mt-16px">
           <thead>
           <tr>
             <th>名称</th>
@@ -61,14 +62,14 @@ const configData = ref<ChatConfig[]>([])
             <th>ApiKey</th>
             <th>ApiBaseUrl</th>
             <th>模型</th>
-            <th>是否默认</th>
-            <th>操作</th>
+            <th class="text-center">是否默认</th>
+            <th class="text-center">操作</th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="(conf, index) in configData" :key="conf.id">
             <td>
-              <n-form-item :path="`configData[${index}].name`">
+              <n-form-item :path="`configData[${index}].name`" required>
                 <n-input v-model:value="conf.name" placeholder="请输入名称"/>
               </n-form-item>
             </td>
@@ -78,7 +79,7 @@ const configData = ref<ChatConfig[]>([])
               </n-form-item>
             </td>
             <td>
-              <n-form-item :path="`configData[${index}].apiKey`">
+              <n-form-item :path="`configData[${index}].apiKey`" required>
                 <n-input v-model:value="conf.apiKey" placeholder="请输入ApiKey"/>
               </n-form-item>
             </td>
@@ -88,16 +89,14 @@ const configData = ref<ChatConfig[]>([])
               </n-form-item>
             </td>
             <td>
-              <n-form-item :path="`configData[${index}].model`">
+              <n-form-item :path="`configData[${index}].model`" required>
                 <n-select v-model:value="conf.model" :options="chatModelOptions" placeholder="请选择模型" />
               </n-form-item>
             </td>
-            <td>
-              <n-form-item :path="`configData[${index}].isDefault`">
-                <n-switch v-model:value="conf.isDefault" />
-              </n-form-item>
+            <td class="text-center">
+              <n-switch v-model:value="conf.isDefault" @update:value="(value) => { isDefaultUpdateHandler(value, conf.id) }"/>
             </td>
-            <td>
+            <td class="text-center">
               <n-button text type="error" @click="() => {configData.splice(configData.indexOf(conf), 1)}">删除</n-button>
             </td>
           </tr>
@@ -109,5 +108,12 @@ const configData = ref<ChatConfig[]>([])
 </template>
 
 <style scoped lang="less">
-
+:deep(.n-table) {
+  td {
+    padding: 0;
+    .n-form-item.n-form-item--top-labelled {
+      grid-template-rows: none;
+    }
+  }
+}
 </style>

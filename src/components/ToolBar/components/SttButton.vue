@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useChatMsgStore} from "@/store/chatMsg";
+import {useChatSessionStore} from "@/store/ChatSession";
 
 defineOptions({name: 'SttButton'})
 
@@ -11,7 +11,7 @@ const content = ref<string>('')
 const tempContent = ref<string>('')
 let recognition: any
 
-const { setInputContent } = useChatMsgStore();
+const { setInputContent } = useChatSessionStore();
 
 const createRecognition = () => {
   if(!recognition) {

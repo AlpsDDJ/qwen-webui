@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {fetchStreamedData} from "@/api/request";
 import {QwenParams, sendQwen} from "@/api/qwen";
-import {useChatMsgStore} from "@/store/chatMsg";
+import {useChatSessionStore} from "@/store/ChatSession";
 import MarkdownIt from 'markdown-it';
 import {useEventBus} from "@vueuse/core";
 
@@ -16,7 +16,7 @@ const props = defineProps<{
 const displayedText = ref('');
 const typing = ref(false);
 
-const chatMsgStore = useChatMsgStore();
+const chatMsgStore = useChatSessionStore();
 const {changeLoading, getUserMsg, changeMsg} = chatMsgStore
 
 const onAnswerUpdateEvent = useEventBus<void>('answerUpdate')

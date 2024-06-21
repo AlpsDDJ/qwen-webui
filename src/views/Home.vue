@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  // import {useChatMsgStore} from "@/store/chatMsg";
+  // import {useChatMsgStore} from "@/store/ChatSession";
   //
   // const { addUserMsg } = useChatMsgStore()
   // const handleSend = (msg: string) => {

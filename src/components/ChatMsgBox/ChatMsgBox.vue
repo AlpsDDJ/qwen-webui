@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {useChatMsgStore} from '@/store/chatMsg';
+import {useChatSessionStore} from '@/store/ChatSession';
 import {ScrollbarInst} from "naive-ui";
 import {useEventBus} from "@vueuse/core";
 
 defineOptions({name: 'ChatMsgBox'})
 
-const {msgList, sending} = storeToRefs(useChatMsgStore())
+const {msgList, sending} = storeToRefs(useChatSessionStore())
 const scrollbarRef = ref<ScrollbarInst>()
 
 const scrollToBottom = () => {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
-import {useChatMsgStore} from "@/store/chatMsg";
+import {useChatSessionStore} from "@/store/ChatSession";
 
 const props = defineProps<{
   msg: ChatMsg
 }>()
 const isUserMsg = computed(() => props.msg.type === 'send')
-const { sending } = storeToRefs(useChatMsgStore())
+const { sending } = storeToRefs(useChatSessionStore())
 
 const docReferenceClickHandler = (doc: DocReference) => {
   console.log('doc ---> ', doc)
