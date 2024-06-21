@@ -6,6 +6,7 @@ import VueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import UnoCSS from 'unocss/vite'
 
 export default () =>
@@ -17,6 +18,7 @@ export default () =>
             defineModel: true
           }
         }),
+        basicSsl(),
         UnoCSS(),
         VueJsx(),
         // VueSetupExtend(),
@@ -60,6 +62,8 @@ export default () =>
         port: 6789, //启动端口
         host: '0.0.0.0',
         hmr: true,
+        // @ts-ignore
+        https: true,
         // 设置 https 代理
         proxy: {
           '/api': {

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {useChatMsgStore} from "@/store/chatMsg";
-import { useMessage } from 'naive-ui'
 
 defineOptions({name: 'SttButton'})
 

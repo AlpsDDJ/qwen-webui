@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useChatMsgStore} from '@/store/chatMsg';
+import {useEventBus} from "@vueuse/core";
 
 // const content = ref<string>('')
 
@@ -17,12 +18,15 @@ const emits = defineEmits<{
   (e: 'send', msg: string): void
 }>()
 
+const onSendEvent = useEventBus<string>('send')
+
 const send = async () => {
   if (!content.value) {
     return
   }
   emits('send', content.value)
   chatMsgStore.addUserMsg(content.value)
+  onSendEvent.emit(content.value)
   content.value = ''
 }
 
