@@ -1,30 +1,10 @@
 <script setup lang="ts">
-const audioTime = ref<number>(0)
-const showAudioTime = ref<boolean>(false)
-let audioTimer: any
-
-const startRecording = () => {
-  audioTimer && clearInterval(audioTimer)
-  if (showAudioTime.value) {
-    audioTime.value = 0
-    showAudioTime.value = false
-  } else {
-    showAudioTime.value = true
-    audioTimer = setInterval(() => {
-      audioTime.value++
-    }, 1000)
-  }
-}
+defineOptions({name: 'ToolBar'})
 </script>
 
 <template>
   <div class="tool-bar flex justify-between items-center">
-    <n-button strong quaternary round :type="showAudioTime ? 'error' : 'success'" @click="startRecording">
-      <template #icon>
-        <svg-icon :name="!showAudioTime ? 'IosMic' : 'IosMicOff'" />
-      </template>
-      <span v-if="showAudioTime" class="ml-6px">{{ audioTime }}</span>
-    </n-button>
+    <stt-button/>
   </div>
 </template>
 

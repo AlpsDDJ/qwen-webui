@@ -1,6 +1,9 @@
-import {useChatMsgStore} from "@/store/chatMsg";
-
+export {}
 declare global {
+
+    // export type {MessageApiInjection} from 'naive-ui/es/message/src/MessageProvider'
+
+
     type MsgId = string | number
 
     type DocReference = {
@@ -25,7 +28,17 @@ declare global {
         chatMap: Record<string, ChatMsg[]>
         currentChat: string
         loading: boolean
+        inputContent: string
     }
 }
 
-export default {}
+// declare global {
+//
+//     export type {MessageApiInjection} from 'naive-ui/es/message/src/MessageProvider'
+//     declare interface Window {
+//         SpeechRecognition?: any;
+//         webkitSpeechRecognition?: any;
+//         $message: MessageApiInjection
+//     }
+//     import('naive-ui/es/message/src/MessageProvider')
+// }

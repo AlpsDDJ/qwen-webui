@@ -6,6 +6,9 @@
   //   console.log('send --> ', msg)
   //   const userMsg = addUserMsg(msg)
   // }
+  import {useMessage} from "naive-ui";
+
+  window.$message = useMessage()
 </script>
 
 <template>

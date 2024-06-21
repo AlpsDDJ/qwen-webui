@@ -4,11 +4,13 @@ export const useChatMsgStore = defineStore('chatMsg', {
             default: []
         },
         currentChat: 'default',
-        loading: false
+        loading: false,
+        inputContent: ''
     }),
     getters: {
-        msgList: ({ chatMap, currentChat }) => chatMap[currentChat],
-        sending: ({ loading }) => loading,
+        msgList: (state) => state.chatMap[state.currentChat],
+        sending: (state) => state.loading,
+        content: (state) => state.inputContent
     },
     actions: {
         setCurrentChat(chat: string) {
@@ -25,6 +27,9 @@ export const useChatMsgStore = defineStore('chatMsg', {
         },
         changeLoading(loading: boolean) {
             this.loading = loading
+        },
+        setInputContent(content?: string) {
+            this.inputContent = content ?? ''
         },
         getUserMsg(id: MsgId) {
             console.log('id -->',  id)
@@ -70,13 +75,6 @@ export const useChatMsgStore = defineStore('chatMsg', {
         },
     },
     persist: {
-        // enabled: true,
-        // strategies: [
-        //     {
-        //         key: 'ChatMsg', // 修改存在缓存中的key值
-        //         storage: localStorage, /// 修改存储方式为localStorage，默认sessionStorage
-        //     }
-        // ],
         key: 'ChatMsg', // 修改存在缓存中的key值
         paths: ['chatMap', 'currentChat']
     }

@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import {useChatMsgStore} from '@/store/chatMsg';
 
-const content = ref<string>('')
+// const content = ref<string>('')
 
-const minRows = 6
-const contentRows = computed<number>(() => {
-  const contentLines = (content.value.match(/\n/g) || []).length + 1
-  return contentLines < minRows ? minRows : contentLines
-})
+// const minRows = 6
+// const contentRows = computed<number>(() => {
+//   const contentLines = (content.value.match(/\n/g) || []).length + 1
+//   return contentLines < minRows ? minRows : contentLines
+// })
 const chatMsgStore = useChatMsgStore();
-const {sending} = storeToRefs(chatMsgStore)
+
+const {sending, inputContent: content} = storeToRefs(chatMsgStore)
 
 
 const emits = defineEmits<{
@@ -21,7 +22,7 @@ const send = async () => {
     return
   }
   emits('send', content.value)
-  await chatMsgStore.addUserMsg(content.value)
+  chatMsgStore.addUserMsg(content.value)
   content.value = ''
 }
 

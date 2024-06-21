@@ -9,7 +9,9 @@ hljs.registerLanguage('Markdown', Markdown)
 
 <template>
   <n-config-provider :hljs="hljs" class="h-100%">
-    <Home />
+    <n-message-provider>
+      <Home/>
+    </n-message-provider>
   </n-config-provider>
 </template>
 
