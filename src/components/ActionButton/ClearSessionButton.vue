@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import {useChatSessionStore} from '@/store/ChatSession';
+import {useChatSessionStore} from '@/store/ChatSession'
 
 const {clearSession} = useChatSessionStore()
-const clearSessionHandler = () => {
-  clearSession()
-}
 </script>
 
 <template>
 
-  <n-popconfirm @positive-click="clearSessionHandler">
+  <n-popconfirm>
     <template #trigger>
       <n-button text>
         <template #icon>
@@ -18,12 +15,10 @@ const clearSessionHandler = () => {
       </n-button>
     </template>
     <template #action>
-      <n-button text type="primary">确定</n-button>
+      <n-button text type="primary" @click="clearSession">确定</n-button>
     </template>
     <span>清除会话?</span>
   </n-popconfirm>
 </template>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>
