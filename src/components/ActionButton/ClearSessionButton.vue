@@ -8,16 +8,16 @@ const {clearSession} = useChatSessionStore()
 
   <n-popconfirm>
     <template #trigger>
-      <n-button text>
+      <n-button text type="warning">
         <template #icon>
           <svg-icon name="Eraser24Regular" viewBox="0 0 24 24"/>
         </template>
       </n-button>
     </template>
     <template #action>
-      <n-button text type="primary" @click="clearSession">确定</n-button>
+      <n-button text type="primary" @click="() => clearSession()">确定</n-button>
     </template>
-    <span>清除会话?</span>
+    <span>清空当前会话?</span>
   </n-popconfirm>
 </template>
 

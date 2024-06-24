@@ -4,29 +4,31 @@ import {useEventBus} from "@vueuse/core";
 
 const chatMsgStore = useChatSessionStore();
 
-const {sending, inputContent: content} = storeToRefs(chatMsgStore)
+const {inputContent: content} = storeToRefs(chatMsgStore)
 
 
-const emits = defineEmits<{
-  (e: 'send', msg: string): void
-}>()
+// const emits = defineEmits<{
+//   (e: 'send', msg: string): void
+// }>()
 
 const onSendEvent = useEventBus<string>('send')
+// const onDoSendEvent = useEventBus<string>('sendFromVoice')
 
-const send = async () => {
-  if (!content.value) {
-    return
-  }
-  emits('send', content.value)
-  chatMsgStore.addUserMsg(content.value)
+const send = () => {
   onSendEvent.emit(content.value)
   content.value = ''
 }
 
+// const doSendEventHandler = (event: string) => {
+//   console.log('doSendEventHandler ---> ', event)
+//   send()
+// }
+// onDoSendEvent.on(doSendEventHandler)
+
 const handleKeyDown = async (event: KeyboardEvent) => {
   if (!event.shiftKey) {
     event.preventDefault()
-    await send()
+    send()
   }
 }
 const autosize = {
@@ -36,7 +38,7 @@ const autosize = {
 </script>
 
 <template>
-  <div class="m-12px">
+  <div class="message-input">
     <n-input v-model:value="content" type="textarea" :autosize="autosize"
              @keydown.enter="handleKeyDown"
              placeholder="Enter 发送，Shift + Enter 换行"
@@ -55,4 +57,16 @@ const autosize = {
   </div>
 </template>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.message-input {
+  padding:  6px 12px 18px 12px;
+  :deep(.n-input) {
+    border-radius: 18px;
+
+    .n-input__prefix,.n-input__suffix {
+      align-items: end;
+      padding: 10.7px 4px;
+    }
+  }
+}
+</style>

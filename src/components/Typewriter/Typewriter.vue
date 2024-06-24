@@ -102,7 +102,7 @@ onMounted(async () => {
 
 .typewriter {
   //white-space: nowrap;
-  overflow: hidden;
+  overflow-x: auto;
 
   :deep(ref) {
     color: rgba(135, 138, 171, .8);

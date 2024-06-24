@@ -14,9 +14,10 @@ defineOptions({name: 'ToolBar'})
 
 <style scoped lang="less">
 .tool-bar {
-  padding-top: 12px;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding:  6px 12px 0 12px;
+  //padding-top: 6px;
+  //padding-left: 12px;
+  //padding-right: 12px;
   border-top: 1px solid #e5e5e5;
 }
 </style>

@@ -6,7 +6,7 @@ const props = defineProps<{
   msg: ChatMsg
 }>()
 const isUserMsg = computed(() => props.msg.type === 'send')
-const { sending } = storeToRefs(useChatSessionStore())
+const {sending} = storeToRefs(useChatSessionStore())
 
 const docReferenceClickHandler = (doc: DocReference) => {
   console.log('doc ---> ', doc)
@@ -19,16 +19,17 @@ const handleReplay = () => {
 
 <template>
   <div class="chat-msg-item">
-    <div class="flex" :class="isUserMsg ? 'justify-end' : 'justify-start'">
-      <template v-if="!isUserMsg">
-        <svg-icon name="Robot" class="user-avatar mr-8px"/>
+    <template v-if="!isUserMsg">
+      <div class="flex flex-col">
+        <svg-icon name="Robot" class="user-avatar mr-8px mb-3px"/>
         <div class="msg-content qwen-message">
           <typewriter ref="typewriterRef" :msg="msg"/>
           <div class="msg-footer color-#707279 font-size-12px" v-if="!sending">
             <div class="doc-references flex mt-16px line-height-20px" v-if="msg.docReferences?.length">
               <div>回答来源：</div>
               <div class="flex flex-col">
-                <div class="doc-references-item color-#2c2c73" v-for="doc in msg.docReferences" @click="docReferenceClickHandler(doc)">
+                <div class="doc-references-item color-#2c2c73" v-for="doc in msg.docReferences"
+                     @click="docReferenceClickHandler(doc)">
                   <span>{{ doc.index_id }}</span>
                   <!--                <n-badge :value="doc.index_id" color="cyan"/>-->
                   <span>{{ doc.doc_name }}</span>
@@ -44,14 +45,19 @@ const handleReplay = () => {
             </div>
           </div>
         </div>
-      </template>
-      <template v-else>
+      </div>
+    </template>
+    <template v-else>
+      <div class="flex justify-end flex-wrap">
+        <div class="w-full flex justify-end mb-3px">
+          <svg-icon v-if="isUserMsg" name="MdPerson" class="user-avatar ml-8px"/>
+        </div>
         <div class="msg-content user-message">
           <typewriter :msg="msg"/>
+<!--          {{ msg.content }}-->
         </div>
-        <svg-icon v-if="isUserMsg" name="MdPerson" class="user-avatar ml-8px"/>
-      </template>
-    </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -87,10 +93,12 @@ const handleReplay = () => {
             border: 1px solid #e5e7eb;
 
           }
+
           span:first-child {
             font-size: 10px;
             padding: 0 4px;
           }
+
           span:last-child {
             margin-left: 8px;
             display: inline-block;
@@ -120,6 +128,7 @@ const handleReplay = () => {
     margin-right: @message-padding;
     background-color: rgba(0, 0, 0, 0.05);
   }
+
   @media screen and (max-width: @min-screen-width) {
     .user-message, .qwen-message {
       margin-left: 0;

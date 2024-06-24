@@ -1,14 +1,29 @@
 <script setup lang="ts">
-  // import {useChatMsgStore} from "@/store/ChatSession";
-  //
-  // const { addUserMsg } = useChatMsgStore()
-  // const handleSend = (msg: string) => {
-  //   console.log('send --> ', msg)
-  //   const userMsg = addUserMsg(msg)
-  // }
   import {useMessage} from "naive-ui";
+  import {useAppStore} from "@/store/App";
+  import {useChatSessionStore} from "@/store/ChatSession";
+  import {useEventBus} from "@vueuse/core/index";
+
+  const appStore = useAppStore();
+  const { isTextInput } = storeToRefs(appStore)
 
   window.$message = useMessage()
+
+  const chatMsgStore = useChatSessionStore();
+  // const {inputContent: content} = storeToRefs(chatMsgStore)
+  const onSendEvent = useEventBus<string>('send')
+
+  const send = (constent: string) => {
+    console.info('发送消息：', constent)
+    if (!constent) {
+      return
+    }
+    // emits('send', content.value)
+    chatMsgStore.addUserMsg(constent)
+    // onSendEvent.emit(content.value)
+    // content.value = ''
+  }
+  onSendEvent.on(send)
 </script>
 
 <template>
@@ -18,7 +33,8 @@
       <div class="chat-box-body flex-1">
         <chat-msg-box />
         <tool-bar />
-        <message-input />
+        <message-input v-if="isTextInput"/>
+        <stt-button v-else/>
       </div>
     </div>
   </div>

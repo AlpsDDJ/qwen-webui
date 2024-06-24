@@ -33,8 +33,8 @@ export const useChatSessionStore = defineStore('ChatSession', {
             this.sessions[this.currentSession].sessionId = sessionId
         },
         clearSession(chat?: string) {
-            this.sessions[chat || 'default'].messages = []
-            this.sessions[chat || 'default'].sessionId = undefined
+            this.sessions[chat ?? 'default'].messages = []
+            this.sessions[chat ?? 'default'].sessionId = undefined
         },
         removeChat(chat: string) {
             delete this.sessions[chat]
