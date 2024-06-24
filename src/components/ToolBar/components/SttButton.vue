@@ -76,12 +76,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <n-button strong quaternary round :type="showAudioTime ? 'error' : 'success'" @click="speek">
-    <template #icon>
-      <svg-icon :name="!showAudioTime ? 'IosMic' : 'IosMicOff'"/>
+
+  <n-popover trigger="hover">
+    <template #trigger>
+      <n-button strong quaternary round :type="showAudioTime ? 'error' : 'success'" @click="speek">
+        <template #icon>
+          <svg-icon :name="!showAudioTime ? 'IosMic' : 'IosMicOff'"/>
+        </template>
+        <span v-if="showAudioTime" class="ml-6px">{{ audioTime }}</span>
+      </n-button>
     </template>
-    <span v-if="showAudioTime" class="ml-6px">{{ audioTime }}</span>
-  </n-button>
+    <span>语音识别</span>
+  </n-popover>
 </template>
 
 <style scoped lang="less">

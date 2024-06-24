@@ -8,11 +8,16 @@ const clearSessionHandler = () => {
 </script>
 
 <template>
-  <n-button text @click="clearSessionHandler">
-    <template #icon>
-      <svg-icon name="Eraser24Regular" viewBox="0 0 24 24"/>
+  <n-popover trigger="hover">
+    <template #trigger>
+      <n-button text @click="clearSessionHandler">
+        <template #icon>
+          <svg-icon name="Eraser24Regular" viewBox="0 0 24 24"/>
+        </template>
+      </n-button>
     </template>
-  </n-button>
+    <span>清除会话</span>
+  </n-popover>
 </template>
 
 <style scoped lang="less">

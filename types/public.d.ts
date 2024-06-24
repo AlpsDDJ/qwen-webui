@@ -9,6 +9,7 @@ declare global {
         apiKey: string,
         apiBaseUrl: string,
         model: string,
+        enabled: boolean,
         isDefault: boolean
     }
 

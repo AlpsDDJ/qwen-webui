@@ -1,14 +1,21 @@
+import {StoreGeneric} from "pinia";
 
-type ChatModelConfigState = {
+export interface ChatModelConfigState {
     models: ChatModelConfig[]
+    settings: {
+        qwenApiKey: string
+    }
 }
 
 export const useChatModelConfig = defineStore('ChatModelConfig', {
     state: (): ChatModelConfigState => ({
-        models: []
+        models: [],
+        settings: {
+            qwenApiKey: ''
+        }
     }),
     persist: {
         key: 'ChatModelConfig', // 修改存在缓存中的key值
-        paths: ['models']
+        paths: ['models', 'settings']
     }
 })
