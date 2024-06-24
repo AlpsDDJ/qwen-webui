@@ -1,4 +1,3 @@
-
 declare global {
     type MsgId = string | number
 
@@ -22,12 +21,16 @@ declare global {
         doc_id: string
     }
 
+    type MessageStatus = 'local' | 'pending' | 'success' | 'error'
+    type MessageType = 'send' | 'receive'
+
     type ChatMsg = {
         id: MsgId,
         content: string,
-        type: 'send' | 'receive',
+        status: MessageStatus,
+        type: MessageType,
         userMsgId?: MsgId,
-        fetched?: boolean,
+        // fetched?: boolean,
         docReferences?: DocReference[]
     }
 

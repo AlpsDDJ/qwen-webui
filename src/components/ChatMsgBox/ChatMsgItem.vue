@@ -24,7 +24,7 @@ const handleReplay = () => {
         <svg-icon name="Robot" class="user-avatar mr-8px mb-3px"/>
         <div class="msg-content qwen-message">
           <typewriter ref="typewriterRef" :msg="msg"/>
-          <div class="msg-footer color-#707279 font-size-12px" v-if="!sending">
+          <div class="msg-footer color-#707279 font-size-12px" v-if="msg.status === 'success'">
             <div class="doc-references flex mt-16px line-height-20px" v-if="msg.docReferences?.length">
               <div>回答来源：</div>
               <div class="flex flex-col">
@@ -53,8 +53,8 @@ const handleReplay = () => {
           <svg-icon v-if="isUserMsg" name="MdPerson" class="user-avatar ml-8px"/>
         </div>
         <div class="msg-content user-message">
-          <typewriter :msg="msg"/>
-<!--          {{ msg.content }}-->
+          <typewriter :msg="msg" v-if="msg.content"/>
+          <!--          {{ msg.content }}-->
         </div>
       </div>
     </template>

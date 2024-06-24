@@ -74,7 +74,7 @@ export const useChatSessionStore = defineStore('ChatSession', {
                 type: 'receive',
                 content: '',
                 userMsgId: forMsgId,
-                fetched: false,
+                status: 'local',
                 id: generateRandomString()
             } as ChatMsg)
         },
