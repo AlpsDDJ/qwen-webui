@@ -53,13 +53,11 @@ const createRecognition = () => {
 const speek = () => {
   audioTimer && clearInterval(audioTimer)
   if (showAudioTime.value) {
+    recognition.stop()
     audioTime.value = 0
     showAudioTime.value = false
     content.value = ''
-    recognition.stop()
-    window.$message.info('结束语音识别')
   } else {
-    window.$message.info('开始语音识别')
     recognition.start()
     showAudioTime.value = true
     audioTimer = setInterval(() => {
@@ -83,7 +81,6 @@ onMounted(() => {
         <template #icon>
           <svg-icon :name="!showAudioTime ? 'IosMic' : 'IosMicOff'"/>
         </template>
-<!--        <span v-if="showAudioTime" class="ml-6px">{{ audioTime }}</span>-->
       </n-button>
     </template>
     <span>{{ audioTime }}</span>
