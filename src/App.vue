@@ -15,6 +15,4 @@ hljs.registerLanguage('Markdown', Markdown)
   </n-config-provider>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped lang="less"></style>

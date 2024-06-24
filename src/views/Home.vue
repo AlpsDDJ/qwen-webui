@@ -35,7 +35,8 @@
   max-width: 1000px;
   border-radius: 14px;
   border: 1px solid rgb(224, 224, 230);
-  background-color: azure;
+  background-color: #ffffff;
+  box-shadow: 0 1px 15px rgba(0, 0, 0, 0.15), 0 20px 25px rgba(0, 0, 0, 0.1);
 
   &-body {
     display: flex; /* 使用Flex布局 */

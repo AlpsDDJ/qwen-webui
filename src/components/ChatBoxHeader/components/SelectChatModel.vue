@@ -2,23 +2,25 @@
 import {useChatSessionStore} from '@/store/ChatSession'
 import {useChatModelConfig} from '@/store/ChatModelConfig'
 
-const {setCurrentModel, model} = useChatSessionStore();
+const chatSessionStore = useChatSessionStore();
+const {setCurrentModel} = chatSessionStore;
+const {model} = storeToRefs(chatSessionStore);
 const {models} = storeToRefs(useChatModelConfig());
-const modelConfigOptions = computed(() => models.value.filter(({name, id, apiKey, appId, enabled}) => enabled && name && id && apiKey && appId).map(({name, id}) => ({label: name, key: id})))
-const selectedModel = ref<string | undefined>(model?.name)
+const modelConfigOptions = computed(() => models.value.filter(({name, id, apiKey, appId, enabled}) => enabled && name && id && apiKey && appId).map(({name, id}) => ({label: name, value: id})))
+const selectedModel = ref<string | undefined>(model.value?.id)
 // const currectModel = computed(() => models.value.find(item => item.id === selectedModel.value))
 const handleSelectModel = (value: string) => {
+  selectedModel.value = value
   const model = models.value.find(item => item.id === value);
-  selectedModel.value = model?.name
   model && setCurrentModel(unref(model))
 }
 </script>
 
 <template>
   <div class="ml-12px">
-    <n-dropdown class="" trigger="click" :options="modelConfigOptions" @select="handleSelectModel" placement="bottom-start">
-      <n-button size="small" type="primary" quaternary>{{ selectedModel ?? '选择模型' }}</n-button>
-    </n-dropdown>
+    <n-popselect :value="selectedModel" :options="modelConfigOptions" @update:value="handleSelectModel" scrollable>
+      <n-button size="small" type="primary" quaternary>{{ model?.name ?? '选择模型' }}</n-button>
+    </n-popselect>
   </div>
 </template>
 

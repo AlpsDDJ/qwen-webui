@@ -62,9 +62,17 @@ const handleReplay = () => {
 
   .msg-content {
     background-color: #ffffff;
-    padding: 8px 16px;
+    padding: 0 10px;
     border-radius: 6px;
-    border: aquamarine 1px solid;
+    border: rgb(222, 222, 222) 1px solid;
+
+    :deep(p) {
+      margin-block-start: 0.6em;
+      margin-block-end: 0.6em;
+      margin-inline-start: 0;
+      margin-inline-end: 0;
+      unicode-bidi: isolate;
+    }
 
     .msg-footer {
       .doc-references {
@@ -105,10 +113,12 @@ const handleReplay = () => {
 
   .user-message {
     margin-left: @message-padding;
+    background-color: rgb(231, 248, 255);
   }
 
   .qwen-message {
     margin-right: @message-padding;
+    background-color: rgba(0, 0, 0, 0.05);
   }
   @media screen and (max-width: @min-screen-width) {
     .user-message, .qwen-message {

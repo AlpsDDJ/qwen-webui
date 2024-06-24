@@ -30,33 +30,29 @@ const handleKeyDown = async (event: KeyboardEvent) => {
   }
 }
 const autosize = {
-  minRows: 3,
-  maxRows: 15
+  minRows: 1,
+  maxRows: 6
 }
 </script>
 
 <template>
   <div class="m-12px">
-    <n-input v-model:value="content" type="textarea" :autosize="autosize" autofocus placeholder="Enter 发送，Shift + Enter 换行"
-             @keydown.enter="handleKeyDown">
+    <n-input v-model:value="content" type="textarea" :autosize="autosize"
+             @keydown.enter="handleKeyDown"
+             placeholder="Enter 发送，Shift + Enter 换行"
+             autofocus>
+      <template #prefix>
+        <stt-button />
+      </template>
       <template #suffix>
-        <div class="h-100% flex items-end flex-content-end pb">
-          <n-button strong secondary type="success" @click="send" :loading="sending">
-            <template #icon>
-              <svg-icon name="IosSend"/>
-            </template>
-            发送
-          </n-button>
-        </div>
+        <n-button text size="tiny" type="success" @click="send">
+          <template #icon>
+            <svg-icon class="send-btn" name="IosSend" />
+          </template>
+        </n-button>
       </template>
     </n-input>
   </div>
 </template>
 
-<style scoped lang="less">
-:deep(.n-input--textarea, .n-input--focus) {
-  .n-input-wrapper {
-    resize: none;
-  }
-}
-</style>
+<style scoped lang="less"></style>

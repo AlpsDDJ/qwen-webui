@@ -5,9 +5,9 @@ defineOptions({name: 'ToolBar'})
 
 <template>
   <div class="tool-bar flex justify-between items-center">
-    <div><stt-button/></div>
+    <div><clear-session-button /></div>
     <div>
-      <clear-session-button />
+<!--      <clear-session-button />-->
     </div>
   </div>
 </template>
