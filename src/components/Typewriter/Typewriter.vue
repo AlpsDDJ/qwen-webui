@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {fetchStreamedData} from "@/api/request";
 import {QwenParams, sendQwen} from "@/api/qwen";
 import {useChatSessionStore} from "@/store/ChatSession";
 import MarkdownIt from 'markdown-it';
