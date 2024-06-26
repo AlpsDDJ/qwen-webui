@@ -53,7 +53,7 @@ const required = (message?: string) => ({required: true, message: `${message ? m
 </script>
 
 <template>
-  <n-button @click="handleShowSetting" text>
+  <n-button @click="handleShowSetting" ghost type="tertiary" class="custom-button">
     <template #icon>
       <svg-icon name="MdSettings"/>
     </template>

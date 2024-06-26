@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import {useChatSessionStore} from "@/store/ChatSession";
+
+const {session} = storeToRefs(useChatSessionStore())
 
 </script>
 
 <template>
   <div class="chat-box-header flex justify-around">
-    <div class="chat-box-title flex">WebUI  <select-chat-model /></div>
+    <div class="chat-box-title flex">{{ session?.name }}
+      <select-chat-model/>
+    </div>
     <div class="chat-box-control flex justify-end items-center">
-
-      <SettingButton />
+      <!--      <SettingButton />-->
     </div>
   </div>
 </template>

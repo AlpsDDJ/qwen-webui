@@ -36,8 +36,10 @@ declare global {
 
     interface ChatSession {
         messages: ChatMsg[],
+        name: string
         sessionId?: string
         chatConfig?: ChatModelConfig
+        createTime: number
     }
 
     type ChatSessionState = {

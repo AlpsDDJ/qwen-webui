@@ -9,6 +9,8 @@ export const useChatSessionStore = defineStore('ChatSession', {
         sessions: {
             default: {
                 messages: [],
+                name: '随便聊聊',
+                createTime: new Date().getTime()
                 // sessionId: generateRandomString()
             }
         },
@@ -17,6 +19,7 @@ export const useChatSessionStore = defineStore('ChatSession', {
         inputContent: ''
     }),
     getters: {
+        session: (state) => state.sessions[state.currentSession],
         messages: (state) => state.sessions[state.currentSession]?.messages ?? [],
         model: (state) => state.sessions[state.currentSession]?.chatConfig,
         sessionId: (state) => state.sessions[state.currentSession]?.sessionId,
@@ -30,22 +33,42 @@ export const useChatSessionStore = defineStore('ChatSession', {
         setCurrentModel(model: ChatModelConfig) {
             this.sessions[this.currentSession].chatConfig = model
         },
-        newChat() {
-            this.sessions[this.currentSession].messages = []
+        newSession(sessionKey: string = generateRandomString()) {
+            this.sessions[sessionKey] = {
+                messages: [],
+                name: '新的聊天',
+                createTime: new Date().getTime()
+            }
+            this.setCurrentChat(sessionKey)
         },
         setSessionId(sessionId: string) {
             this.sessions[this.currentSession].sessionId = sessionId
+        },
+        setSessionName(name: string, chat?: string) {
+            console.log('name ---> ', name)
+            this.sessions[chat ?? this.currentSession].name = name
         },
         clearSession(chat?: string) {
             this.sessions[chat ?? 'default'].messages = []
             this.sessions[chat ?? 'default'].sessionId = undefined
         },
         removeChat(chat: string) {
+            if(Object.keys(this.sessions).length === 1) {
+                window.$message.warning('最后一个了，留一个吧！')
+                return
+            }
             delete this.sessions[chat]
+            console.log('chat ---> ', chat)
+            console.log('this.currentSession ---> ', this.currentSession)
+            if(chat === this.currentSession) {
+                console.log('Object.keys(this.sessions) ---> ', Object.keys(this.sessions))
+                this.currentSession = Object.keys(this.sessions)[0]
+                console.log('this.currentSession ---> ', this.currentSession)
+            }
         },
-        changeLoading(loading: boolean) {
-            this.loading = loading
-        },
+        // changeLoading(loading: boolean) {
+        //     this.loading = loading
+        // },
         setInputContent(content?: string) {
             this.inputContent = content ?? ''
         },

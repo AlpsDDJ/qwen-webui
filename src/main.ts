@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import './style.css'
+import './assets/style/index.less'
 import 'virtual:uno.css'
 import App from './App.vue'
 import {setupStore} from "@/store";
