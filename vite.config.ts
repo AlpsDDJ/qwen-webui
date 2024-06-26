@@ -70,7 +70,7 @@ export default () =>
         // 设置 https 代理
         proxy: {
           '/api': {
-            target: 'https://dashscope.aliyuncs.com/',
+            target: 'https://dashscope.aliyuncs.com',
             changeOrigin: true,
             // rewrite: (path: string) => path.replace(/^\/jeeasy-api/, '')
           }

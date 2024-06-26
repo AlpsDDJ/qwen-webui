@@ -1,4 +1,8 @@
 import {generateRandomString} from "@/utils";
+import {QwenParams, QwenSSELoader} from "@/api/qwen";
+import {useEventBus} from "@vueuse/core/index";
+
+const onAnswerUpdateEvent = useEventBus<void>('answerUpdate')
 
 export const useChatSessionStore = defineStore('ChatSession', {
     state: (): ChatSessionState => ({
@@ -23,7 +27,7 @@ export const useChatSessionStore = defineStore('ChatSession', {
         setCurrentChat(chat: string) {
             this.currentSession = chat
         },
-        setCurrentModel (model: ChatModelConfig) {
+        setCurrentModel(model: ChatModelConfig) {
             this.sessions[this.currentSession].chatConfig = model
         },
         newChat() {
@@ -45,8 +49,8 @@ export const useChatSessionStore = defineStore('ChatSession', {
         setInputContent(content?: string) {
             this.inputContent = content ?? ''
         },
-        getUserMsg(id: MsgId) {
-            console.log('id -->',  id)
+        getMsgById(id: MsgId) {
+            console.log('id -->', id)
             console.log('this.sessions[this.currentSession] ---> ', this.sessions[this.currentSession])
             return this.sessions[this.currentSession]?.messages?.find(msg => msg.id === id)
         },
@@ -61,32 +65,63 @@ export const useChatSessionStore = defineStore('ChatSession', {
             } as ChatMsg;
 
             this.sessions[this.currentSession].messages?.push(msg)
-            // await this.addRobotMsg('', _id)
-            this.addEmptyRobotMsg(_id)
+            this.addRobotMsg(msg)
             return msg
         },
-        changeMsg(msg: ChatMsg){
-            this.sessions[this.currentSession].messages = this.sessions[this.currentSession].messages?.map(item => item.id === msg.id ? msg : item)
+        mergeMsg(msg: Partial<ChatMsg>) {
+            this.sessions[this.currentSession].messages = this.sessions[this.currentSession].messages?.map(item => item.id === msg.id ? {...item, ...msg} : item)
         },
-        addEmptyRobotMsg(forMsgId: MsgId) {
-            !this.sessions[this.currentSession] && (this.sessions[this.currentSession].messages = [])
-            this.sessions[this.currentSession]?.messages?.push({
-                type: 'receive',
-                content: '',
-                userMsgId: forMsgId,
-                status: 'local',
-                id: generateRandomString()
-            } as ChatMsg)
+        async replayMsg(userMsgId: MsgId, msgId?: MsgId) {
+            const useMsg = this.getMsgById(userMsgId)
+            if (useMsg) {
+                await this.addRobotMsg(useMsg, msgId)
+            }
         },
-        async addRobotMsg(content: string, forMsgId: MsgId, id?: MsgId) {
-            !this.sessions[this.currentSession] && (this.sessions[this.currentSession].messages = [])
-            this.sessions[this.currentSession].messages.push({
-                type: 'receive',
-                content,
-                userMsgId: forMsgId,
-                id: id || generateRandomString()
-            } as ChatMsg)
-        },
+        async addRobotMsg(userMsg: ChatMsg, id?: MsgId) {
+            const params: QwenParams = {
+                input: {prompt: userMsg?.content},
+                parameters: {
+                    incremental_output: true
+                },
+                debug: true
+            }
+            const msgId = id ?? generateRandomString()
+            const mergeMsg = (msg: Partial<ChatMsg>) => {
+                this.mergeMsg({...msg, id: msgId})
+            }
+            const sseLoader = new QwenSSELoader();
+            sseLoader.onConnection = () => {
+                if (!this.messages.some(item => item.id === id)) {
+                    this.sessions[this.currentSession]?.messages?.push({
+                        type: 'receive',
+                        content: '',
+                        userMsgId: userMsg.id,
+                        status: 'local',
+                        id: msgId
+                    })
+                }
+                onAnswerUpdateEvent.emit()
+                mergeMsg({status: 'pending'})
+            }
+            sseLoader.onError = () => {
+                // this.mergeMsg({ status: 'error'})
+                mergeMsg({status: 'error'})
+            }
+            sseLoader.onDone = (displayedText) => {
+                mergeMsg({content: displayedText, status: displayedText ? 'success' : 'error'})
+            }
+
+            sseLoader.onMessage = ({text, session_id, doc_references, finish_reason}, displayedText) => {
+                if (finish_reason !== 'stop') {
+                    this.setSessionId(session_id)
+                    mergeMsg({content: displayedText})
+                } else {
+                    mergeMsg({docReferences: doc_references})
+                }
+                onAnswerUpdateEvent.emit()
+            }
+            await sseLoader.send(params)
+        }
     },
     persist: {
         key: 'ChatSession', // 修改存在缓存中的key值

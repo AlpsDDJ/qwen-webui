@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {QwenParams, sendQwen} from "@/api/qwen";
-import {useChatSessionStore} from "@/store/ChatSession";
 import MarkdownIt from 'markdown-it';
-import {useEventBus} from "@vueuse/core";
 import hljs from 'highlight.js'
 import 'highlight.js/styles/a11y-dark.css';
 
@@ -46,94 +43,14 @@ const markdown = new MarkdownIt({
   }
 })
 
-const props = defineProps<{
+defineProps<{
   msg: ChatMsg
 }>()
-
-const displayedText = ref('');
-const typing = ref(false);
-
-const chatMsgStore = useChatSessionStore();
-const {changeLoading, getUserMsg, setSessionId} = chatMsgStore
-const {sending} = storeToRefs(chatMsgStore)
-
-const onAnswerUpdateEvent = useEventBus<void>('answerUpdate')
-
-async function readStream(reader: any) {
-  // typing.value = true
-  while (true) {
-    const {done, value} = await reader.read();
-    if (done) {
-      typing.value = false;
-      Object.assign(props.msg, {content: displayedText.value})
-      break;
-    }
-    const chunkText = new TextDecoder().decode(value);
-    for (const splitText of chunkText.split('\n')) {
-      if (splitText.startsWith('data:')) {
-        let jsonData: any
-        try {
-          jsonData = JSON.parse(splitText.substring(5))
-        } catch (err) {
-          console.info('chunkText ---> ', chunkText)
-          console.error(err)
-        }
-        const {text, finish_reason, doc_references, session_id} = jsonData.output || {}
-        if (finish_reason !== 'stop') {
-          displayedText.value += text;
-          typing.value = true;
-          onAnswerUpdateEvent.emit()
-          setSessionId(session_id)
-          await new Promise(resolve => setTimeout(resolve, 50)); // 控制打字速度
-        } else {
-          Object.assign(props.msg, {docReferences: doc_references, status: 'success'})
-        }
-      }
-    }
-
-  }
-}
-
-const loadData = async () => {
-  displayedText.value = ''
-  Object.assign(props.msg, {status: 'pending', content: '', docReferences: []})
-  const userMsg = getUserMsg(props.msg?.userMsgId ?? '')
-  const params: QwenParams = {
-    input: {prompt: userMsg?.content},
-    parameters: {
-      // result_format: "message",
-      incremental_output: true
-    },
-    debug: {}
-  }
-  const reader = await sendQwen(params).finally(() => {
-    changeLoading(false)
-  });
-  await readStream(reader);
-}
-
-defineExpose<{
-  loadData: typeof loadData
-}>({
-  loadData
-})
-
-onMounted(async () => {
-  console.log('props.msg.status --> ', props.msg.status)
-  if (props.msg.status === 'local') {
-    await loadData()
-  } else {
-    displayedText.value = props.msg.content
-  }
-});
 </script>
 
 <template>
-  <!--  <n-code class="typewriter" :code="displayedText" language="Markdown" word-wrap />-->
   <div class="typewriter color-#1f2328">
-    <div v-html="markdown.render(displayedText)" v-if="displayedText"/>
-    <div v-else-if="!sending" class="p-8px">无数据</div>
-    <div v-else class="p-8px">loading</div>
+    <div v-html="markdown.render(msg.content ?? '')"/>
   </div>
 </template>
 

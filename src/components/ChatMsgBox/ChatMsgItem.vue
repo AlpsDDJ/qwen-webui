@@ -6,14 +6,20 @@ const props = defineProps<{
   msg: ChatMsg
 }>()
 const isUserMsg = computed(() => props.msg.type === 'send')
-const {sending} = storeToRefs(useChatSessionStore())
+const chatSessionStore = useChatSessionStore();
+const { replayMsg } = chatSessionStore
 
 const docReferenceClickHandler = (doc: DocReference) => {
   console.log('doc ---> ', doc)
 }
 const typewriterRef = ref()
 const handleReplay = () => {
-  typewriterRef.value?.loadData()
+  const { id, userMsgId, type } = props.msg
+  if(type === 'send') {
+    replayMsg(id)
+  } else {
+    replayMsg(userMsgId!, id)
+  }
 }
 </script>
 
@@ -24,8 +30,8 @@ const handleReplay = () => {
         <svg-icon name="Robot" class="user-avatar mr-8px mb-3px"/>
         <div class="msg-content qwen-message">
           <typewriter ref="typewriterRef" :msg="msg"/>
-          <div class="msg-footer color-#707279 font-size-12px" v-if="msg.status === 'success'">
-            <div class="doc-references flex mt-16px line-height-20px" v-if="msg.docReferences?.length">
+          <div class="msg-footer color-#707279 font-size-12px">
+            <div class="doc-references mt-16px line-height-20px" v-if="msg.docReferences?.length">
               <div>回答来源：</div>
               <div class="flex flex-col">
                 <div class="doc-references-item color-#2c2c73" v-for="doc in msg.docReferences"
