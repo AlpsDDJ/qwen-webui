@@ -90,6 +90,7 @@ const focusNameInput = (event: InputEvent) => {
     background-color: #ffffff;
     cursor: pointer;
     border: 2px solid transparent;
+    box-shadow: @box-shadow;
 
     &.current-session {
       border-color: #1d93ab;

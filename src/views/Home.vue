@@ -67,11 +67,7 @@ onSendEvent.on(send)
   }
 
   &-body {
-    //display: flex; /* 使用Flex布局 */
-    //flex-direction: column; /* 默认值，但明确指出垂直布局 */
-    //background-color: #d4d0ab;
-    //border-left: 1px solid rgb(224, 224, 230);
-    //box-shadow: -5px 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: rgba(0, 0, 0, 0.05) 0 2px 4px 0;
   }
 }
 
