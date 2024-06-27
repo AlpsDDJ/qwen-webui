@@ -1,6 +1,7 @@
 import {generateRandomString} from "@/utils";
 import {QwenParams, QwenSSELoader} from "@/api/qwen";
 import {useEventBus} from "@vueuse/core/index";
+import Icon from "@/components/Icon/index.vue";
 
 const onAnswerUpdateEvent = useEventBus<void>('answerUpdate')
 
@@ -15,7 +16,7 @@ export const useChatSessionStore = defineStore('ChatSession', {
             }
         },
         currentSession: 'default',
-        loading: false,
+        // loading: false,
         inputContent: ''
     }),
     getters: {
@@ -23,7 +24,7 @@ export const useChatSessionStore = defineStore('ChatSession', {
         messages: (state) => state.sessions[state.currentSession]?.messages ?? [],
         model: (state) => state.sessions[state.currentSession]?.chatConfig,
         sessionId: (state) => state.sessions[state.currentSession]?.sessionId,
-        sending: (state) => state.loading,
+        // sending: (state) => state.loading,
         content: (state) => state.inputContent
     },
     actions: {
@@ -45,30 +46,25 @@ export const useChatSessionStore = defineStore('ChatSession', {
             this.sessions[this.currentSession].sessionId = sessionId
         },
         setSessionName(name: string, chat?: string) {
-            console.log('name ---> ', name)
             this.sessions[chat ?? this.currentSession].name = name
         },
         clearSession(chat?: string) {
-            this.sessions[chat ?? 'default'].messages = []
-            this.sessions[chat ?? 'default'].sessionId = undefined
+            const sessionKey = chat ?? this.currentSession
+            this.sessions[sessionKey].messages = []
+            this.sessions[sessionKey].sessionId = undefined
         },
         removeChat(chat: string) {
             if(Object.keys(this.sessions).length === 1) {
-                window.$message.warning('最后一个了，留一个吧！')
+                window.$message.warning('最后一个了，留一个吧！', {
+                    icon: () => h(Icon, { iconName: 'MdSad', size: 18 })
+                })
                 return
             }
             delete this.sessions[chat]
-            console.log('chat ---> ', chat)
-            console.log('this.currentSession ---> ', this.currentSession)
             if(chat === this.currentSession) {
-                console.log('Object.keys(this.sessions) ---> ', Object.keys(this.sessions))
                 this.currentSession = Object.keys(this.sessions)[0]
-                console.log('this.currentSession ---> ', this.currentSession)
             }
         },
-        // changeLoading(loading: boolean) {
-        //     this.loading = loading
-        // },
         setInputContent(content?: string) {
             this.inputContent = content ?? ''
         },
@@ -78,7 +74,7 @@ export const useChatSessionStore = defineStore('ChatSession', {
             return this.sessions[this.currentSession]?.messages?.find(msg => msg.id === id)
         },
         addUserMsg(content: string, id?: MsgId) {
-            this.loading = true
+            // this.loading = true
             !this.sessions[this.currentSession] && (this.sessions[this.currentSession].messages = [])
             const _id = id || generateRandomString()
             const msg = {
@@ -127,14 +123,13 @@ export const useChatSessionStore = defineStore('ChatSession', {
                 mergeMsg({status: 'pending'})
             }
             sseLoader.onError = () => {
-                // this.mergeMsg({ status: 'error'})
                 mergeMsg({status: 'error'})
             }
             sseLoader.onDone = (displayedText) => {
                 mergeMsg({content: displayedText, status: displayedText ? 'success' : 'error'})
             }
 
-            sseLoader.onMessage = ({text, session_id, doc_references, finish_reason}, displayedText) => {
+            sseLoader.onMessage = ({session_id, doc_references, finish_reason}, displayedText) => {
                 if (finish_reason !== 'stop') {
                     this.setSessionId(session_id)
                     mergeMsg({content: displayedText})

@@ -45,7 +45,7 @@ declare global {
     type ChatSessionState = {
         sessions: Record<string, ChatSession>
         currentSession: string
-        loading: boolean
+        // loading: boolean
         inputContent: string
     }
 

@@ -1,21 +1,21 @@
 <script setup lang="ts">
-
 import {useChatSessionStore} from "@/store/ChatSession";
+import LogoIcon from "@/components/SvgIcon/LogoIcon.vue";
 
 const props = defineProps<{
   msg: ChatMsg
 }>()
 const isUserMsg = computed(() => props.msg.type === 'send')
 const chatSessionStore = useChatSessionStore();
-const { replayMsg } = chatSessionStore
+const {replayMsg} = chatSessionStore
 
 const docReferenceClickHandler = (doc: DocReference) => {
   console.log('doc ---> ', doc)
 }
 const typewriterRef = ref()
 const handleReplay = () => {
-  const { id, userMsgId, type } = props.msg
-  if(type === 'send') {
+  const {id, userMsgId, type} = props.msg
+  if (type === 'send') {
     replayMsg(id)
   } else {
     replayMsg(userMsgId!, id)
@@ -27,7 +27,7 @@ const handleReplay = () => {
   <div class="chat-msg-item">
     <template v-if="!isUserMsg">
       <div class="flex flex-col">
-        <svg-icon name="Robot" class="user-avatar mr-8px mb-3px"/>
+        <logo-icon class="font-size-22px mb-4px" />
         <div class="msg-content qwen-message">
           <typewriter ref="typewriterRef" :msg="msg"/>
           <div class="msg-footer color-#707279 font-size-12px">
@@ -142,5 +142,4 @@ const handleReplay = () => {
     }
   }
 }
-
 </style>

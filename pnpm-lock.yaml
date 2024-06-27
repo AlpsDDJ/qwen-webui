@@ -43,6 +43,12 @@ devDependencies:
   '@types/node':
     specifier: ^20.14.6
     version: 20.14.6
+  '@vicons/ionicons4':
+    specifier: ^0.12.0
+    version: 0.12.0
+  '@vicons/tabler':
+    specifier: ^0.12.0
+    version: 0.12.0
   '@vitejs/plugin-basic-ssl':
     specifier: ^1.1.0
     version: 1.1.0(vite@5.3.1)
@@ -1150,6 +1156,14 @@ packages:
       vite: 5.3.1(@types/node@20.14.6)(less@4.2.0)
     transitivePeerDependencies:
       - rollup
+    dev: true
+
+  /@vicons/ionicons4@0.12.0:
+    resolution: {integrity: sha512-i+7YwlpCrqD6m9esbZLy1bpVQlh4CKugtS3OzgfNw6BLTQQK6HT7drktaJgcESj/BTr4avdNbAtMQXx56wSVMg==}
+    dev: true
+
+  /@vicons/tabler@0.12.0:
+    resolution: {integrity: sha512-3+wUFuxb7e8OzZ8Wryct1pzfA2vyoF4lwW98O9s27ZrfCGaJGNmqG+q8A7vQ92Mf+COCgxpK+rhNPTtTvaU6qw==}
     dev: true
 
   /@vitejs/plugin-basic-ssl@1.1.0(vite@5.3.1):

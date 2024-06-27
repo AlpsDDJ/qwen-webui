@@ -3,9 +3,10 @@ import {useMessage} from "naive-ui";
 import {useAppStore} from "@/store/App";
 import {useChatSessionStore} from "@/store/ChatSession";
 import {useEventBus} from "@vueuse/core/index";
+import {useWindowSize} from "@vueuse/core";
 
 const appStore = useAppStore();
-const {isTextInput} = storeToRefs(appStore)
+const {isTextInput, collapsed} = storeToRefs(appStore)
 
 window.$message = useMessage()
 
@@ -13,15 +14,18 @@ const chatMsgStore = useChatSessionStore();
 // const {inputContent: content} = storeToRefs(chatMsgStore)
 const onSendEvent = useEventBus<string>('send')
 
+const { width } = useWindowSize()
+
+watch(width, (val) => {
+  collapsed.value = val < 768;
+}, { immediate: true })
+
 const send = (constent: string) => {
   console.info('发送消息：', constent)
   if (!constent) {
     return
   }
-  // emits('send', content.value)
   chatMsgStore.addUserMsg(constent)
-  // onSendEvent.emit(content.value)
-  // content.value = ''
 }
 onSendEvent.on(send)
 </script>
@@ -29,7 +33,7 @@ onSendEvent.on(send)
 <template>
   <div class="flex justify-center items-center h-full w-full">
     <n-layout class="chat-box" has-sider>
-      <n-layout-sider class="chat-menu" bordered>
+      <n-layout-sider class="chat-menu" bordered :collapsed="collapsed" :collapsed-width="0" :width="width < 768 ? '100%' : undefined" :show-collapsed-content="false">
         <chat-sider />
       </n-layout-sider>
       <n-layout-content class="chat-box-body">

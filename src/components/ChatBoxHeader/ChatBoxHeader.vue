@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import {useChatSessionStore} from "@/store/ChatSession";
+import {useAppStore} from "@/store/App";
 
 const {session} = storeToRefs(useChatSessionStore())
+const appStore = useAppStore();
+const {collapsed} = storeToRefs(appStore)
 
 </script>
 
 <template>
   <div class="chat-box-header flex justify-around">
-    <div class="chat-box-title flex">{{ session?.name }}
+    <div class="chat-box-title flex items-center">
+      <n-button @click="() => { collapsed = false }" size="small" ghost class="custom-button mr-20px" v-if="collapsed">
+        <template #icon>
+          <Icon icon-name="IosUndo"/>
+        </template>
+      </n-button>
+      {{ session?.name }}
       <select-chat-model/>
     </div>
     <div class="chat-box-control flex justify-end items-center">

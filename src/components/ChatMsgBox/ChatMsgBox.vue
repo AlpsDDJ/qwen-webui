@@ -5,7 +5,7 @@ import {useEventBus} from "@vueuse/core";
 
 defineOptions({name: 'ChatMsgBox'})
 
-const {messages, sending} = storeToRefs(useChatSessionStore())
+const {messages} = storeToRefs(useChatSessionStore())
 const scrollbarRef = ref<ScrollbarInst>()
 
 const scrollToBottom = () => {

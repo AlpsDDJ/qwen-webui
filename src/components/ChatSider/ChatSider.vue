@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useChatSessionStore} from "@/store/ChatSession";
-import {InputInst} from "naive-ui";
+import {useAppStore} from "@/store/App";
+import LogoIcon from "@/components/SvgIcon/LogoIcon.vue";
 
 defineOptions({
   name: 'ChatSider'
@@ -9,27 +10,26 @@ defineOptions({
 const chatSessionStore = useChatSessionStore();
 const {newSession, setSessionName, setCurrentChat, removeChat} = chatSessionStore
 const {sessions, currentSession} = storeToRefs(chatSessionStore)
+const appStore = useAppStore();
+const {collapsed, isMobile} = storeToRefs(appStore)
 
 const addChatHandler = () => {
   newSession()
 }
 
 const editNameKey = ref<string>()
-const editName = ref<string>()
+const editName = ref<string>('')
+
+const sessionItemClickHandler = (key: string) => {
+  setCurrentChat(key)
+  isMobile.value && (collapsed.value = true)
+}
 
 const editNameHandler = (key: string, name: string = '随便聊聊') => {
-  console.log('edit name')
   editNameKey.value = key
   editName.value = name
-  // nextTick(() => {
-  //   nextTick(() => {
-  //     console.log('editNameRef.value ---> ', editNameRef.value.focus)
-  //   })
-  //   // editNameRef.value.focus()
-  // })
 }
 const saveNameHandler = (key: string) => {
-  console.log('save name --> ', editName.value)
   setSessionName(editName.value, key)
   editNameKey.value = undefined
 }
@@ -42,24 +42,28 @@ const focusNameInput = (event: InputEvent) => {
 
 <template>
   <div class="chat-session h-full">
-    <div class="w-90% min-h-100px mb-20px"></div>
+    <div class="w-90% flex pb-20px justify-center items-center">
+      <logo-icon class="font-size-32px"/>
+      <h4 class="ml-12px">千问 - WebUI</h4>
+    </div>
     <div class="w-full flex-1">
       <div class="w-full flex flex-col items-center">
         <div v-for="(session, key) in sessions" :key="key" :class="key === currentSession ? 'current-session': ''"
-             @click="setCurrentChat(key)"
-             class="chat-session-item">
+             @click="sessionItemClickHandler(key)"
+             @click.middle="removeChat(key)"
+             class="chat-session-item box-shadow">
           <div class="session-name flex h-28px flex items-center justify-between">
             <template v-if="key !== editNameKey">
-              <span class="mr-12px ml-10px" @click="editNameHandler(key, session.name)">
+              <span class="mr-12px ml-10px" @click.stop="editNameHandler(key, session.name)">
                 {{ session.name ?? '随便聊聊' }}
               </span>
-              <n-button text size="tiny" class="delete-session-btn" @click.stop="removeChat(key)">删除</n-button>
+              <Icon icon-name="IosCloseCircleOutline" size="13" class="delete-session-btn" @click.stop="removeChat(key)"/>
             </template>
             <n-input v-else v-model:value="editName" size="small" @blur="saveNameHandler(key)"
                      @mouseover="focusNameInput"/>
           </div>
           <div class="flex justify-between session-info">
-            <span>{{ session.messages?.length ?? 0 }} 条对话</span>
+            <span>{{ (session as ChatSession).messages?.length ?? 0 }} 条对话</span>
             <!--        <span>{{ session.createTime }}</span>-->
             <n-time :time="session.createTime" type="datetime"/>
           </div>
@@ -69,7 +73,12 @@ const focusNameInput = (event: InputEvent) => {
     </div>
     <n-flex justify="space-between" class="w-80% mb-20px">
       <setting-button/>
-      <n-button @click="addChatHandler" size="small" ghost class="custom-button">新建聊天</n-button>
+      <n-button @click="addChatHandler" size="small" ghost class="custom-button">
+        <template #icon>
+          <Icon icon-name="IosAddCircleOutline" size="16"/>
+        </template>
+        聊点别的
+      </n-button>
     </n-flex>
   </div>
 </template>
@@ -90,7 +99,15 @@ const focusNameInput = (event: InputEvent) => {
     background-color: #ffffff;
     cursor: pointer;
     border: 2px solid transparent;
-    box-shadow: @box-shadow;
+    //box-shadow: @box-shadow;
+    //
+    &:hover {
+      border: 2px solid rgba(29, 147, 171, .35);
+
+      .session-name .delete-session-btn {
+        display: inline-block;
+      }
+    }
 
     &.current-session {
       border-color: #1d93ab;
@@ -107,13 +124,13 @@ const focusNameInput = (event: InputEvent) => {
       .delete-session-btn {
         display: none;
         margin-top: -18px;
-      }
+        color: #a6a6a6;
 
-      &:hover {
-        .delete-session-btn {
-          display: inline-block;
+        &:hover {
+          color: #d03050;
         }
       }
+
     }
 
     .session-info {

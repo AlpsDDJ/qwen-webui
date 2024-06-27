@@ -55,7 +55,7 @@ const required = (message?: string) => ({required: true, message: `${message ? m
 <template>
   <n-button @click="handleShowSetting" ghost type="tertiary" class="custom-button">
     <template #icon>
-      <svg-icon name="MdSettings"/>
+      <Icon icon-name="MdSettings" size="16"/>
     </template>
   </n-button>
   <n-drawer v-model:show="showSetting" placement="top" height="70%" title="设置">

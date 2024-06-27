@@ -46,6 +46,13 @@ html, body, #app {
   background-color: rgba(144, 147, 153, .3);
 }
 
+.box-shadow {
+  box-shadow: @box-shadow;
+  &:hover {
+    box-shadow: @box-shadow-hover;
+  }
+}
+
 .custom-button {
   background-color: #ffffff;
   padding: 10px;
@@ -59,5 +66,9 @@ html, body, #app {
     height: 16px;
     line-height: 16px;
     text-align: center;
+  }
+  .n-button__icon {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }

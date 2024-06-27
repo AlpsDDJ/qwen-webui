@@ -10,7 +10,7 @@ const {clearSession} = useChatSessionStore()
     <template #trigger>
       <n-button text type="warning">
         <template #icon>
-          <svg-icon name="Eraser24Regular" viewBox="0 0 24 24"/>
+          <Icon icon-name="Eraser" type="tabler" />
         </template>
       </n-button>
     </template>
