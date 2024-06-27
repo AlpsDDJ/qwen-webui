@@ -2,7 +2,7 @@
 import {useMessage} from "naive-ui";
 import {useAppStore} from "@/store/App";
 import {useChatSessionStore} from "@/store/ChatSession";
-import {useEventBus} from "@vueuse/core/index";
+import {useEventBus, useFullscreen} from "@vueuse/core/index";
 import {useWindowSize} from "@vueuse/core";
 
 const appStore = useAppStore();
@@ -11,8 +11,9 @@ const {isTextInput, collapsed} = storeToRefs(appStore)
 window.$message = useMessage()
 
 const chatMsgStore = useChatSessionStore();
-// const {inputContent: content} = storeToRefs(chatMsgStore)
 const onSendEvent = useEventBus<string>('send')
+const chatRef = ref()
+const { toggle, isFullscreen } = useFullscreen(chatRef);
 
 const { width } = useWindowSize()
 
@@ -32,14 +33,14 @@ onSendEvent.on(send)
 
 <template>
   <div class="flex justify-center items-center h-full w-full">
-    <n-layout class="chat-box" has-sider>
+    <n-layout ref="chatRef" class="chat-box" has-sider>
       <n-layout-sider class="chat-menu" bordered :collapsed="collapsed" :collapsed-width="0" :width="width < 768 ? '100%' : undefined" :show-collapsed-content="false">
         <chat-sider />
       </n-layout-sider>
       <n-layout-content class="chat-box-body">
         <div class="h-full flex flex-col justify-between">
           <n-layout-header>
-            <chat-box-header/>
+            <chat-box-header @toggle-fullscreen="toggle" :is-fullscreen="isFullscreen"/>
           </n-layout-header>
           <chat-msg-box class="flex-1 min-h-0"/>
           <n-layout-footer>

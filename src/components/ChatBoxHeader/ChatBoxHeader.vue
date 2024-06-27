@@ -2,9 +2,27 @@
 import {useChatSessionStore} from "@/store/ChatSession";
 import {useAppStore} from "@/store/App";
 
+withDefaults(defineProps<{
+  isFullscreen?: boolean
+}>(), {
+  isFullscreen: false
+})
+
 const {session} = storeToRefs(useChatSessionStore())
 const appStore = useAppStore();
 const {collapsed} = storeToRefs(appStore)
+
+// const { isFullscreen } = useFullscreen();
+
+const toggleFullscreen = () => {
+  // toggle()
+  emits('toggleFullscreen')
+  // console.log('isFullscreen ---> ', isFullscreen)
+}
+
+const emits = defineEmits<{
+  (e: 'toggleFullscreen'): void
+}>()
 
 </script>
 
@@ -20,7 +38,11 @@ const {collapsed} = storeToRefs(appStore)
       <select-chat-model/>
     </div>
     <div class="chat-box-control flex justify-end items-center">
-      <!--      <SettingButton />-->
+      <n-button class="custom-button" size="small" @click="toggleFullscreen" >
+        <template  #icon>
+            <Icon :icon-name="!isFullscreen ? 'IosExpand' : 'IosContract'" />
+          </template>
+      </n-button>
     </div>
   </div>
 </template>

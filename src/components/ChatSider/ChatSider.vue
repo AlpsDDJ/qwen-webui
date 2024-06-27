@@ -64,7 +64,6 @@ const focusNameInput = (event: InputEvent) => {
           </div>
           <div class="flex justify-between session-info">
             <span>{{ (session as ChatSession).messages?.length ?? 0 }} 条对话</span>
-            <!--        <span>{{ session.createTime }}</span>-->
             <n-time :time="session.createTime" type="datetime"/>
           </div>
         </div>
@@ -99,8 +98,7 @@ const focusNameInput = (event: InputEvent) => {
     background-color: #ffffff;
     cursor: pointer;
     border: 2px solid transparent;
-    //box-shadow: @box-shadow;
-    //
+
     &:hover {
       border: 2px solid rgba(29, 147, 171, .35);
 
@@ -140,18 +138,5 @@ const focusNameInput = (event: InputEvent) => {
       margin-top: 8px;
     }
   }
-
-  //.custom-button {
-  //  background-color: #ffffff;
-  //  padding: 10px;
-  //  font-size: 13.3px;
-  //  border-radius: 8px;
-  //  height: auto;
-  //  :deep(.n-button__content) {
-  //    height: 16px;
-  //    line-height: 16px;
-  //    text-align: center;
-  //  }
-  //}
 }
 </style>

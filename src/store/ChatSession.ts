@@ -12,11 +12,9 @@ export const useChatSessionStore = defineStore('ChatSession', {
                 messages: [],
                 name: '随便聊聊',
                 createTime: new Date().getTime()
-                // sessionId: generateRandomString()
             }
         },
         currentSession: 'default',
-        // loading: false,
         inputContent: ''
     }),
     getters: {
@@ -24,7 +22,6 @@ export const useChatSessionStore = defineStore('ChatSession', {
         messages: (state) => state.sessions[state.currentSession]?.messages ?? [],
         model: (state) => state.sessions[state.currentSession]?.chatConfig,
         sessionId: (state) => state.sessions[state.currentSession]?.sessionId,
-        // sending: (state) => state.loading,
         content: (state) => state.inputContent
     },
     actions: {
@@ -74,7 +71,6 @@ export const useChatSessionStore = defineStore('ChatSession', {
             return this.sessions[this.currentSession]?.messages?.find(msg => msg.id === id)
         },
         addUserMsg(content: string, id?: MsgId) {
-            // this.loading = true
             !this.sessions[this.currentSession] && (this.sessions[this.currentSession].messages = [])
             const _id = id || generateRandomString()
             const msg = {

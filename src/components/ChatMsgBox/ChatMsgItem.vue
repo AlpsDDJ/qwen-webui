@@ -37,7 +37,6 @@ const handleReplay = () => {
                 <div class="doc-references-item color-#2c2c73" v-for="doc in msg.docReferences"
                      @click="docReferenceClickHandler(doc)">
                   <span>{{ doc.index_id }}</span>
-                  <!--                <n-badge :value="doc.index_id" color="cyan"/>-->
                   <span>{{ doc.doc_name }}</span>
                 </div>
               </div>
@@ -60,7 +59,6 @@ const handleReplay = () => {
         </div>
         <div class="msg-content user-message">
           <typewriter :msg="msg" v-if="msg.content"/>
-          <!--          {{ msg.content }}-->
         </div>
       </div>
     </template>
