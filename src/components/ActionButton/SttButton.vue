@@ -116,8 +116,31 @@ const handelTouchEnd = (event: TouchEvent) => {
 
 onMounted(() => {
   createRecognition()
-})
 
+  const mouseupHandler = (event: MouseEvent) => {
+    // console.log('mouseupHandler ---> ', event)
+    switch (event.button) {
+      case 3:
+        speek(false)
+        event.preventDefault()
+        setTimeout(() => {
+          onSendEvent.emit(inputContent.value)
+          inputContent.value = ''
+        }, 500)
+        break
+      case 4:
+        speek(true)
+        event.preventDefault()
+        break
+      default:
+        break
+    }
+    // if (event.button === 'Enter') {
+    //   onSendEvent.emit(inputContent.value)
+  }
+  document.removeEventListener('mouseup', mouseupHandler)
+  document.addEventListener('mouseup', mouseupHandler)
+})
 
 </script>
 
