@@ -2,16 +2,9 @@
 import {useChatSessionStore} from "@/store/ChatSession";
 import {useAppStore} from "@/store/App";
 import {useEventBus} from "@vueuse/core/index";
+import {useSpeechRecognition} from "@/hooks/useSpeech";
 
 defineOptions({name: 'SttButton'})
-
-const audioTime = ref<number>(0)
-const recording = ref<boolean>(false)
-let audioTimer: any
-
-const content = ref<string>('')
-const tempContent = ref<string>('')
-let recognition: any
 
 const {setInputContent} = useChatSessionStore();
 const appStore = useAppStore();
@@ -20,70 +13,10 @@ const {isDesktop, isTextInput} = storeToRefs(appStore)
 const chatMsgStore = useChatSessionStore();
 const {inputContent} = storeToRefs(chatMsgStore)
 
-// const isDesktop = computed(() => {
-//   return deviceType.value === 'desktop'
-// })
 
-const createRecognition = () => {
-  if (!recognition) {
-    try {
-      recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
-    } catch (error) {
-      console.warn('浏览器不支持语音识别');
-    }
-
-    if (recognition) {
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = window.navigator.language || 'zh-CN'; // 设置为语言
-      // const searchBox = document.getElementById('search-box');
-      // const searchButton = document.getElementById('search-button');
-      recognition.onresult = (event: any) => {
-        // console.log(event)
-        const result = event.results[event.results.length - 1];
-        const transcript = result[0].transcript;
-        if (result.isFinal) {
-          content.value += transcript;
-          setInputContent(content.value)
-        } else {
-          tempContent.value = transcript;
-          setInputContent(content.value + tempContent.value)
-        }
-        // console.log(content.value)
-      }
-      recognition.onend = () => {
-        recording.value && recognition.start()
-      }
-
-    } else {
-      window.$message.error('浏览器不支持语音识别')
-    } // 加上容错处理
-  }
-}
-
-const speek = (start?: boolean) => {
-  if (typeof start === 'boolean') {
-    recording.value = !start
-  }
-  audioTimer && clearInterval(audioTimer)
-  if (recording.value) {
-    console.info('语音识别结束')
-    recording.value = false
-    recognition.stop()
-    audioTime.value = 0
-    content.value = ''
-  } else {
-    console.info('语音识别开始')
-    recording.value = true
-    recognition.start()
-    audioTimer = setInterval(() => {
-      audioTime.value++
-    }, 1000)
-  }
-}
-
-const handelTouchStart = () => {
-  speek(true)
+const handelTouchStart = async () => {
+  // speek(true)
+  await start()
 }
 const onSendEvent = useEventBus<string>('send')
 
@@ -93,7 +26,7 @@ onSendEvent.on(() => {
 
 const touchButton = ref()
 
-const handelTouchEnd = (event: TouchEvent) => {
+const handelTouchEnd = async (event: TouchEvent) => {
 
 
   const endX = event.changedTouches[0].clientX;
@@ -104,32 +37,42 @@ const handelTouchEnd = (event: TouchEvent) => {
   const isHovering = endX >= buttonRect.left && endX <= buttonRect.right && endY >= buttonRect.top && endY <= buttonRect.bottom;
   console.log('handelTouchEnd ---isHovering---> ', isHovering)
 
-  speek(false)
+  setInputContent(await stop())
   if (isHovering) {
     onSendEvent.emit(inputContent.value)
   }
   inputContent.value = ''
-  // if(!!inputContent.value) {
-  //   onDoSendEvent.emit('doSend')
-  // }
+}
+
+const onSTTResult = (result?: string) => {
+  result && setInputContent(result)
+}
+
+const {results, speeching, speechTimer, start, stop} = useSpeechRecognition({ onresult: onSTTResult })
+
+const toggle = async () => {
+  if(speeching.value) {
+    const res = await stop()
+    console.log('await toggle() ---> ', res)
+    setInputContent(results.value.join())
+  } else {
+    await start()
+  }
 }
 
 onMounted(() => {
-  createRecognition()
-
-  const mouseupHandler = (event: MouseEvent) => {
-    // console.log('mouseupHandler ---> ', event)
+  const mouseupHandler = async (event: MouseEvent) => {
     switch (event.button) {
+      // 侧键后退 --> 停止识别并发送请求
       case 3:
-        speek(false)
+        setInputContent(await stop())
         event.preventDefault()
-        setTimeout(() => {
-          onSendEvent.emit(inputContent.value)
-          inputContent.value = ''
-        }, 500)
+        onSendEvent.emit(inputContent.value)
+        inputContent.value = ''
         break
+      // 侧键前进 --> 停止识别
       case 4:
-        speek(true)
+        await toggle()
         event.preventDefault()
         break
       default:
@@ -146,24 +89,24 @@ onMounted(() => {
 
 <template>
 
-  <n-popover trigger="manual" :show="recording" v-if="isTextInput">
+  <n-popover trigger="manual" :show="speeching" v-if="isTextInput">
     <template #trigger>
-      <n-button v-if="isDesktop" text size="tiny" :type="recording ? 'error' : 'success'" @click="speek(undefined)">
+      <n-button v-if="isDesktop" text size="tiny" :type="speeching ? 'error' : 'success'" @click="toggle">
         <template #icon>
-          <svg-icon :name="!recording ? 'IosMic' : 'IosMicOff'"/>
+          <svg-icon :name="!speeching ? 'IosMic' : 'IosMicOff'"/>
         </template>
       </n-button>
       <n-button v-else text size="tiny" type="success" @click="toggleInputType">
         <svg-icon name="IosMic"/>
       </n-button>
     </template>
-    <span>{{ audioTime }}</span>
+    <span>{{ speechTimer }}</span>
   </n-popover>
   <n-popover v-else trigger="manual" :show="!!inputContent">
     {{ inputContent }}
     <template #trigger>
       <div class="touch-mic-btn flex justify-between items-center flex-content-center"
-           :class="recording ? 'is-active' : ''">
+           :class="speeching ? 'is-active' : ''">
         <div class="toggle-button flex items-center mr-6px">
           <svg-icon name="KeyboardAltRound" view-box="0 0 24 24" @click.stop="toggleInputType"/>
         </div>

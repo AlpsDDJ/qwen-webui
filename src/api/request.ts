@@ -7,7 +7,7 @@ const request = axios.create({
 
 export { request }
 
-export async function fetchStreamedData(url, config?: RequestInit) {
+export async function fetchStreamedData(url: string, config?: RequestInit) {
     const response = await fetch(url, config);
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
