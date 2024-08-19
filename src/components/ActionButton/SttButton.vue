@@ -2,7 +2,8 @@
 import {useChatSessionStore} from "@/store/ChatSession";
 import {useAppStore} from "@/store/App";
 import {useEventBus} from "@vueuse/core/index";
-import {useSpeechRecognition} from "@/hooks/useSpeech";
+import {useSpeechRecognition} from "use-speech-vue3";
+// import {useSpeechRecognition} from "@/hooks/useSpeech";
 
 defineOptions({name: 'SttButton'})
 
@@ -48,7 +49,10 @@ const onSTTResult = (result?: string) => {
   result && setInputContent(result)
 }
 
-const {results, speeching, speechTimer, start, stop} = useSpeechRecognition({ onresult: onSTTResult })
+const {results, speeching, speechTimer, start, stop} = useSpeechRecognition({ onresult: onSTTResult, coiled: true })
+console.log('results', results.value)
+console.log('speeching', speeching.value)
+console.log('speechTimer', speechTimer.value)
 
 const toggle = async () => {
   if(speeching.value) {

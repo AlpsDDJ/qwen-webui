@@ -11,12 +11,12 @@
   "dependencies": {
     "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
-    "easy-descriptor": "^1.1.1",
     "highlight.js": "^11.9.0",
     "markdown-it": "^14.1.0",
     "naive-ui": "^2.38.2",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
+    "use-speech-vue3": "^0.0.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.3"
   },
